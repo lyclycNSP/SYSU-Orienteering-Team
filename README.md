@@ -17,7 +17,7 @@
 
 图例保留原图版本。ISCD2018已被IOF 2024版取代；本图用于基础识别，比赛按所采用的规则、地图图例和补充说明执行。
 
-[IOF检查点说明现行文件](https://orienteering.sport/iof/rules/control-descriptions/) · [IOF制图规范](https://orienteering.sport/iof/mapping/)
+[IOF检查点说明现行文件](https://orienteering.sport/iof/rules/control-descriptions/) · [IOF检查点说明2024版PDF下载](downloads/IOF%20Control%20Descriptions%202024.pdf) · [IOF制图规范](https://orienteering.sport/iof/mapping/)
 
 2024版变化提示：说明表应印黑色；新增铁路/有轨电车和翻面指示；部分符号含义扩展。原图保持原样，未改成新版。
 
