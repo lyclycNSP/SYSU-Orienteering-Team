@@ -1,4 +1,5 @@
 ---
+media_id: 799d74ba-7c03-4469-a118-61bd193ef3f9
 title: 队伍事务
 summary: 把共同遵守的约定，放在方便查阅的地方。
 cover: uploads/4f7fbfdce4f4c79613b5fc1ecbac11b8.jpg
@@ -9,6 +10,8 @@ published: true
 ## 01 / 队伍章程
 
 待加入确认后的正式版本，并标注适用范围、版本和生效日期。
+
+[下载附件](<uploads/articles/rules/799d74ba-7c03-4469-a118-61bd193ef3f9/IOF Control Descriptions 2024-58fe175c.pdf>) [PDF预览](<uploads/articles/rules/799d74ba-7c03-4469-a118-61bd193ef3f9/IOF Control Descriptions 2024-58fe175c.pdf>)
 
 ## 02 / 训练与参与
 
