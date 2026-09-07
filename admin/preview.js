@@ -72,7 +72,7 @@
     fields: [
       { name: 'title', label: '链接文字', widget: 'string', default: '下载附件' },
       { name: 'file', label: '附件', widget: 'file' },
-      { name: 'preview', label: 'PDF 预览版（可选）', widget: 'file', required: false }
+      { name: 'preview', label: 'PDF 预览版', widget: 'file', required: false }
     ],
     pattern: /^\[([^\]\n]+)\]\(<([^>\n]+)>\)(?: \[PDF预览\]\(<([^>\n]+)>\))?$/,
     fromBlock: match => ({ title: match[1], file: match[2], preview: match[3] || '' }),

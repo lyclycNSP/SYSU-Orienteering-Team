@@ -58,3 +58,12 @@ test('Unpublished PDF links use the draft blob URL for preview and download', ()
   assert.equal((html.match(/href="blob:https:\/\/example.test\/pdf"/g) || []).length, 2);
   assert.match(html, /target="_blank"/);
 });
+
+test('Preview does not add extra PDF buttons to paired attachment components', () => {
+  const { renderBody, components } = previewHarness();
+  const block = components.attachment.toBlock({ file: 'uploads/a.pdf', preview: 'uploads/a.pdf' });
+  const html = renderBody(block, () => ({ toString: () => 'blob:https://example.test/pdf' }));
+  assert.equal((html.match(/<a /g) || []).length, 2);
+  assert.doesNotMatch(html, /attachment-download/);
+  assert.equal(components.attachment.fields[2].label, 'PDF 预览版');
+});

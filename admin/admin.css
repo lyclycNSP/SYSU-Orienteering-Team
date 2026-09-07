@@ -8,6 +8,7 @@ input, textarea, select, [contenteditable="true"] { font-family: inherit; line-h
 input:focus, textarea:focus, select:focus { outline-color: #547955; }
 button { border-radius: 6px; }
 [class*="FieldLabel"] { color: #173f35 !important; background: transparent !important; font-size: 14px !important; font-weight: 600 !important; }
+[class*="FieldLabel"]::before, [class*="FieldLabel"]::after { display: none !important; }
 [class*="ControlTopbar"] { background: #edf0e5 !important; padding: 8px 12px; border-radius: 6px 6px 0 0; }
 [class*="ControlContainer"] { border-color: #d9e0d5 !important; border-radius: 0 0 6px 6px; }
 [class*="ControlContainer"] > input, [class*="ControlContainer"] > textarea { font-size: 15px !important; }

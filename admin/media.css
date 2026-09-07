@@ -2,6 +2,8 @@
 .team-media::backdrop { background:#173f3580; }
 .team-media header,.team-media footer,.media-tools { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
 .team-media header,.team-media footer { justify-content:space-between; }
+.team-media header { box-shadow:none; }
+.team-media .media-delete { color:#a12424; border-color:#dfb7b7; }
 .team-media h2 { margin:0; font-size:24px; } .team-media p { margin:6px 0 18px; }
 .team-media button,.team-media select,.team-media input[type=search],.media-upload { padding:9px 14px; border:1px solid #cad7ca; border-radius:7px; background:white; color:#173f35; font:inherit; }
 .team-media button,.media-upload { cursor:pointer; } .team-media button:disabled { opacity:.45; cursor:default; }

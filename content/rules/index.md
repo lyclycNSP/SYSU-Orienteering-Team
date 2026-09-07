@@ -2,7 +2,7 @@
 media_id: 799d74ba-7c03-4469-a118-61bd193ef3f9
 title: 队伍事务
 summary: 把共同遵守的约定，放在方便查阅的地方。
-cover: uploads/4f7fbfdce4f4c79613b5fc1ecbac11b8.jpg
+cover: uploads/articles/rules/799d74ba-7c03-4469-a118-61bd193ef3f9/4f7fbfdce4f4c79613b5fc1ecbac11b8.jpg
 published: true
 ---
 > 本页为栏目结构预览，正式条文尚未录入。以下仅展示内容分区，不代表已经生效的队伍规定。
@@ -17,7 +17,7 @@ published: true
 
 预留训练安排、报名方式及参与要求的查阅位置。
 
-![](uploads/微信图片_20260715221421_57_114.jpg)
+![](uploads/resources/微信图片_20260715221421_57_114.jpg)
 
 ## 03 / 参赛与队伍事务
 
@@ -25,6 +25,6 @@ published: true
 
 ## 04 测试
 
-![](uploads/微信图片_20260715221409_46_114.jpg)
+![](uploads/resources/微信图片_20260715221409_46_114.jpg)
 
 ![]()

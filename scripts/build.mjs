@@ -1,4 +1,4 @@
-import { cpSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs';
+import { cpSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve, join, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import MarkdownIt from 'markdown-it';
@@ -103,6 +103,13 @@ export function build() {
   // Fixed generated-output directory only; never rewrite the source guide or team HTML.
   const output = join(root, '_site');
   const guideBefore = readFileSync(join(root, 'index.html'));
+  const aliasFile = join(root, 'config/media-aliases.json');
+  const mediaAliases = (existsSync(aliasFile) ? JSON.parse(readFileSync(aliasFile, 'utf8')) : []).map(item => {
+    if (!item.oldPath.startsWith('uploads/') || !item.newPath.startsWith('uploads/')) throw new Error('图片兼容路径必须位于 uploads');
+    const oldPath = decodeURIComponent(assetUrl(item.oldPath, ''));
+    const newPath = decodeURIComponent(assetUrl(item.newPath, ''));
+    return { oldPath, newPath };
+  }).filter(item => existsSync(join(root, item.newPath))); // Explicitly deleted media loses its alias too.
   const posts = readdirSync(join(root, 'content/posts')).filter(name => name.endsWith('.md')).map(name => readContent(join(root, 'content/posts', name))).filter(post => post.published !== false);
   const rules = readdirSync(join(root, 'content/rules')).filter(name => name.endsWith('.md')).map(name => ({ ...readContent(join(root, 'content/rules', name)), category: '规章制度' })).filter(post => post.published !== false);
   const tutorials = readdirSync(join(root, 'content/tutorials')).filter(name => name.endsWith('.md')).map(name => ({ ...readContent(join(root, 'content/tutorials', name)), category: '定向入门', collection: 'tutorials' })).filter(post => post.published !== false);
@@ -147,6 +154,10 @@ export function build() {
     cpSync(join(root, path), join(output, path), { recursive: true });
   }
   for (const file of ['style.css', 'content.css', 'filter.js', 'map.svg']) cpSync(join(root, 'team', file), join(output, 'team', file));
+  for (const { oldPath, newPath } of mediaAliases) {
+    mkdirSync(dirname(join(output, oldPath)), { recursive: true });
+    cpSync(join(root, newPath), join(output, oldPath));
+  }
   mkdirSync(join(output, 'admin/vendor'), { recursive: true });
   cpSync(join(root, 'node_modules/markdown-it/dist/browser/markdown-it.umd.min.js'), join(output, 'admin/vendor/markdown-it.js'));
   for (const [path, html] of pages) {

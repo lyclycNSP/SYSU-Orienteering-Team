@@ -5,11 +5,10 @@ import createClass from 'create-react-class';
 import { Map as ImmutableMap } from 'immutable';
 import { store } from 'decap-cms-core/dist/esm/redux';
 import { currentBackend } from 'decap-cms-core/dist/esm/backend';
-import { addAsset } from 'decap-cms-core/dist/esm/actions/media';
-import { addDraftEntryMediaFile, changeDraftField } from 'decap-cms-core/dist/esm/actions/entries';
+import { addAsset, removeAsset } from 'decap-cms-core/dist/esm/actions/media';
+import { addDraftEntryMediaFile, removeDraftEntryMediaFile, changeDraftField } from 'decap-cms-core/dist/esm/actions/entries';
 import { loadMedia, loadMediaDisplayURL, mediaPersisted, closeMediaLibrary, insertMedia } from 'decap-cms-core/dist/esm/actions/mediaLibrary';
 import { createAssetProxy } from 'decap-cms-core/dist/esm/valueObjects/AssetProxy';
-import { getBlobSHA } from 'decap-cms-lib-util';
 import { articleFolder, uniqueName, filterMedia, referencedUploads, mediaKind, uploadPath } from './media-policy.mjs';
 import * as attachments from './attachments.mjs';
 
@@ -35,10 +34,11 @@ function MediaLibrary({ close }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [limit, setLimit] = useState(60);
+  const [deleted, setDeleted] = useState([]);
   const dialog = useRef();
   const previousFocus = useRef(document.activeElement);
   const files = [...new Map([...(library.get('files') || []), ...(entry?.get('mediaFiles')?.toJS() || [])].map(file => [file.path, file])).values()];
-  const visible = filterMedia(files, { scope, folder, references: referencedUploads(data), type, query, imagesOnly });
+  const visible = filterMedia(files.filter(file => !deleted.includes(file.path)), { scope, folder, references: referencedUploads(data), type, query, imagesOnly });
   const chosen = visible.find(file => file.path === selected);
 
   useEffect(() => {
@@ -69,7 +69,9 @@ function MediaLibrary({ close }) {
         const file = new File([input], uniqueName(input.name, crypto.randomUUID().slice(0, 8)), { type: input.type });
         const path = `${destination}/${file.name}`;
         const asset = createAssetProxy({ file, path });
-        const media = { id: await getBlobSHA(file), name: file.name, path, file, size: file.size, displayURL: asset.url, url: asset.url, draft: Boolean(entry && !entry.isEmpty()) };
+        // Draft identity is path-based: uploading the same bytes twice must not
+        // replace the first attachment in Decap's id-deduplicated draft list.
+        const media = { id: `draft:${path}`, name: file.name, path, file, size: file.size, displayURL: asset.url, url: asset.url, draft: Boolean(entry && !entry.isEmpty()) };
         // Use the same asset cache and draft publication path as Decap. No new
         // credentials, direct GitHub writes, or automatic deletion of old files.
         if (media.draft) {
@@ -92,8 +94,31 @@ function MediaLibrary({ close }) {
     close();
   }
 
+  async function deleteSelected() {
+    if (!chosen || busy || !uploadPath(chosen.path)) return;
+    const warning = chosen.draft ? '将删除这个未发布附件。' : '将立即从仓库删除这个文件，已发布页面对它的引用会失效。';
+    if (!window.confirm(`${warning}\n${chosen.name}\n如只是移除正文中的图片，请取消并在正文中操作。确认删除？`)) return;
+    setBusy(true); setError('');
+    try {
+      if (!chosen.draft) await currentBackend(store.getState().config).deleteMedia(store.getState().config, chosen.path);
+      store.dispatch(removeAsset(chosen.path));
+      // Decap removes draft media by content hash. Preserve same-content files
+      // at other paths when deleting one of several copies.
+      const draftFiles = store.getState().entryDraft.getIn(['entry', 'mediaFiles']);
+      if (draftFiles) {
+        const siblings = draftFiles.toJS().filter(file => file.id === chosen.id && file.path !== chosen.path);
+        store.dispatch(removeDraftEntryMediaFile({ id: chosen.id }));
+        siblings.forEach(file => store.dispatch(addDraftEntryMediaFile(file)));
+      }
+      setDeleted(previous => [...previous, chosen.path]);
+      setSelected('');
+      if (!chosen.draft) await store.dispatch(loadMedia());
+    } catch (failure) { setError(`删除失败：${failure.message}`); }
+    finally { setBusy(false); }
+  }
+
   return <dialog className="team-media" ref={dialog} aria-labelledby="media-title" onCancel={event => { event.preventDefault(); if (!busy) close(); }}>
-    <header><div><h2 id="media-title">图片与附件</h2><p>按文章整理，公共素材集中使用</p></div><button type="button" onClick={close} disabled={busy} aria-label="关闭媒体选择窗口">关闭 ×</button></header>
+    <header><div><h2 id="media-title">图片与附件</h2><p>按文章整理，公共素材集中使用</p></div><button type="button" onClick={close} disabled={busy} aria-label="关闭媒体选择窗口">关闭</button></header>
     <div className="media-tools">
       <div role="group" aria-label="素材范围">{[['article', '当前文章'], ['shared', '公共素材'], ['all', '全部文件']].map(([value, label]) => <button key={value} type="button" aria-pressed={scope === value} disabled={busy || (value === 'article' && !hasArticle)} onClick={() => setScope(value)}>{label}</button>)}</div>
       <label>文件类型 <select aria-label="文件类型" value={type} onChange={event => setType(event.target.value)} disabled={imagesOnly}><option value="all">全部类型</option><option value="image">图片</option><option value="document">文档与其他附件</option></select></label>
@@ -106,7 +131,7 @@ function MediaLibrary({ close }) {
     <div className="media-grid">{visible.slice(0, limit).map(file => <MediaTile key={file.path} file={file} selected={selected === file.path} state={state} onClick={() => setSelected(file.path)} />)}</div>
     {!visible.length && <p className="media-empty">{scope === 'article' ? '当前文章暂无符合条件的附件，可上传新文件或从其他范围选择。' : '暂无符合条件的文件。'}</p>}
     {visible.length > limit && <button type="button" onClick={() => setLimit(limit + 60)}>显示更多文件</button>}
-    <footer><span>{visible.length} 个文件{chosen ? ` · 已选：${chosen.name}` : ''}</span><div>{chosen && <MediaPreview file={chosen} state={state} />}<button type="button" className="media-confirm" disabled={!chosen || !canInsert || busy} onClick={choose}>插入所选文件</button></div></footer>
+    <footer><span>{visible.length} 个文件{chosen ? ` · 已选：${chosen.name}` : ''}</span><div>{chosen && <MediaPreview file={chosen} state={state} />}<button type="button" className="media-delete" disabled={!chosen || busy} onClick={deleteSelected}>删除所选文件</button><button type="button" className="media-confirm" disabled={!chosen || !canInsert || busy} onClick={choose}>插入所选文件</button></div></footer>
   </dialog>;
 }
 

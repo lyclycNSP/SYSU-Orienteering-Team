@@ -1,10 +1,11 @@
 ---
+media_id: de4d1b89b12dd1fec89ff745
 title: 一次训练，留下哪些值得复盘的事？
 category: 训练回顾
 summary: 从路线选择到失误分析，把跑过的路整理成下一次出发的经验。
 date: 2026-09-07
 author: ""
-cover: /uploads/测试图.jpg
+cover: /uploads/articles/posts/de4d1b89b12dd1fec89ff745/测试图.jpg
 cover_alt: ""
 example: false
 published: true

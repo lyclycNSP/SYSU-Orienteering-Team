@@ -15,6 +15,7 @@ test('Media groups preserve old references and isolate new article/shared upload
   assert.equal(filterMedia(files, { scope: 'all', imagesOnly: true }).length, 3);
   assert.equal(filterMedia(files, { scope: 'all', type: 'document', query: 'resources MAP' }).length, 1);
   assert.equal(filterMedia(files, { scope: 'article', folder: null }).length, 0);
+  assert.equal(filterMedia([{path:'uploads/.gitkeep'}], {scope:'all'}).length, 0);
 });
 
 test('Upload names and paths cannot escape uploads or overwrite legacy files', () => {
@@ -51,4 +52,14 @@ test('PDF preview and download share a valid project-relative URL; Word remains 
   assert.match(html, /title="下载原文件" download=""/);
   assert.match(html, /<a href="https:\/\/example.org\/">普通<\/a>/);
   assert.doesNotMatch(renderMarkdown('[x](javascript:alert(1))'), /href="javascript:/);
+});
+
+test('Paired PDF and Word attachments have exactly their two intended controls', () => {
+  for (const original of ['uploads/rules.pdf', 'uploads/rules.docx']) {
+    const html = renderMarkdown(`[下载附件](<${original}>) [PDF预览](<uploads/rules.pdf>)`);
+    assert.equal((html.match(/<a /g) || []).length, 2);
+    assert.equal((html.match(/download=""/g) || []).length, 1);
+    assert.doesNotMatch(html, /attachment-download/);
+    assert.match(html, /PDF预览<\/a>/);
+  }
 });

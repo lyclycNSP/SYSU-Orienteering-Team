@@ -1,9 +1,10 @@
 ---
+media_id: 18c8c85909eb744219ffb1a3
 title: 第一次接触定向，从这里开始
 summary: 图例速查、创作者推荐和实用工具，随时查阅，也可以下载 PDF。
 date: 2026-09-07
 author: 中山大学定向队
-cover: uploads/guide-cover.webp
+cover: uploads/articles/tutorials/18c8c85909eb744219ffb1a3/guide-cover.webp
 cover_alt: 队员手持定向地图，在跑道旁查看路线
 published: true
 ---
@@ -33,25 +34,25 @@ published: true
 
 ### 短距离图例 · ISSprOM2019-2
 
-![短距离图例 · ISSprOM2019-2](uploads/guide-sprint.jpg)
+![短距离图例 · ISSprOM2019-2](uploads/articles/tutorials/18c8c85909eb744219ffb1a3/guide-sprint.jpg)
 
 ### 中长距离图例 · ISOM2017-2
 
-![中长距离图例 · ISOM2017-2](uploads/guide-forest.jpg)
+![中长距离图例 · ISOM2017-2](uploads/articles/tutorials/18c8c85909eb744219ffb1a3/guide-forest.jpg)
 
 ### 百米 / 校园补充 · SSSOM2019
 
 是否使用以本场地图为准。
 
-![百米 / 校园补充 · SSSOM2019](uploads/guide-school.jpg)
+![百米 / 校园补充 · SSSOM2019](uploads/articles/tutorials/18c8c85909eb744219ffb1a3/guide-school.jpg)
 
 ### 检查点说明 · ISCD2018旧版
 
-![检查点说明 · ISCD2018旧版](uploads/guide-controls.jpg)
+![检查点说明 · ISCD2018旧版](uploads/articles/tutorials/18c8c85909eb744219ffb1a3/guide-controls.jpg)
 
 ### 综合总览 · 辅助查阅
 
-![综合总览 · 辅助查阅](uploads/guide-overview.jpg)
+![综合总览 · 辅助查阅](uploads/articles/tutorials/18c8c85909eb744219ffb1a3/guide-overview.jpg)
 
 ---
 

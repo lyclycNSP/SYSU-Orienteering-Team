@@ -104,6 +104,11 @@ test('Build preserves the guide and emits only public files', () => {
   assert.equal(existsSync(join(output, 'content')), false);
   assert.equal(existsSync(join(output, 'node_modules')), false);
   assert.ok(existsSync(join(output, 'admin/config.yml')));
+  const aliasPath = join(root, 'config/media-aliases.json');
+  if (existsSync(aliasPath)) for (const alias of JSON.parse(readFileSync(aliasPath, 'utf8'))) {
+    if (existsSync(join(root, alias.newPath))) assert.deepEqual(readFileSync(join(output, alias.oldPath)), readFileSync(join(root, alias.newPath)));
+    else assert.equal(existsSync(join(output, alias.oldPath)), false);
+  }
   const homepage = readFileSync(join(output, 'team/index.html'), 'utf8');
   assert.match(homepage, /<strong>01 \/ 队员指南<\/strong>/);
   const visible = readdirSync(join(root, 'content/posts')).filter(name => name.endsWith('.md')).map(name => readContent(join(root, 'content/posts', name))).filter(post => post.published !== false);

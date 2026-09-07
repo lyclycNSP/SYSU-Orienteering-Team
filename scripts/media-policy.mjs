@@ -28,7 +28,7 @@ export function filterMedia(files, { scope, folder, references = [], type = 'all
   const words = query.normalize('NFKC').toLowerCase().trim().split(/\s+/).filter(Boolean);
   return files.filter(file => {
     const path = uploadPath(file.path);
-    if (!path) return false;
+    if (!path || path.split('/').pop().startsWith('.')) return false;
     if (scope === 'article' && !(folder && path.startsWith(folder + '/')) && !refs.has(path)) return false;
     if (scope === 'shared' && !path.startsWith('uploads/resources/')) return false;
     const kind = mediaKind(path);
