@@ -1,0 +1,4 @@
+/admin /admin/ 301
+/team/* https://lyclycnsp.github.io/SYSU-Orienteering-Team/team/:splat 302!
+/ https://lyclycnsp.github.io/SYSU-Orienteering-Team/ 302!
+/index.html https://lyclycnsp.github.io/SYSU-Orienteering-Team/ 302!

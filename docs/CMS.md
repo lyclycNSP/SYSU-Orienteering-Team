@@ -37,14 +37,14 @@ GitHub Pages 仍响应 main 的所有提交。Decap 通过 GitHub 后端读写�
 
 ## 日常编辑
 
-- “入门教程”：可独立新建多篇教程，源文件位于 `content/tutorials/`，生成 `team/tutorials/文件名.html`，归入首页“入门教程”筛选。原有手记中的“入门资料”在构建时兼容显示为“入门教程”，旧文章网址不变。
+- “定向入门”：可独立新建多篇教程，源文件位于 `content/tutorials/`，生成 `team/tutorials/文件名.html`，归入首页“定向入门”筛选。原有手记中的“入门资料”在构建时兼容显示为“定向入门”，旧文章网址不变。
 
 正文上方可切换“富文本 / Markdown”，两种模式均有快捷工具栏。富文本沿用 Decap 原生操作；Markdown 模式直接在选区或光标处插入语法，支持加粗、斜体、删除线、标题、列表、引用、代码、链接、图片和附件。图片/附件按钮打开同一个媒体库，选择后自动插入链接，并支持未发布图片的右侧预览。
 
 Markdown 模式支持撤销/重做以及 Ctrl/Cmd+B、I、Z 快捷键。切换模式会清空该模式的撤销记录，但保留当前正文；富文本转换可能统一空行等 Markdown 写法，特殊语法建议始终使用 Markdown 模式。编辑器扩展位于 `admin/markdown-editor.js`，没有修改 Decap 核心文件。
 
-- “队伍手记”：填写标题、摘要、正文等。封面可上传插图或照片，建议横图。首页裁剪铺满卡片顶部，正文页显示完整比例。空封面保留等高线图案。
-- “队伍规程”：像手记一样新建多篇文章。`/team/rules/` 展示规程列表，首页有“队伍规程”筛选。原规程内容完整保留为一篇文章，文件仍在 `content/rules/index.md`，阅读地址为 `/team/rules/doc-index.html`；新文章使用 `doc-文件名.html`。
+- “队伍文化宣传”：填写标题、摘要、正文等。封面可上传插图或照片，建议横图。首页裁剪铺满卡片顶部，正文页显示完整比例。空封面保留等高线图案。
+- “规章制度”：像手记一样新建多篇文章。`/team/rules/` 展示规程列表，首页有“规章制度”筛选。原规程内容完整保留为一篇文章，文件仍在 `content/rules/index.md`，阅读地址为 `/team/rules/doc-index.html`；新文章使用 `doc-文件名.html`。
 - “资料下载 → 下载资料列表”：添加、删除、排序资料条目，填写名称和说明，用“文件”字段上传 PDF、Word 等附件。原指南和 IOF 下载入口继续保留。
 - 正文使用富文本模式时，可在“添加组件（＋）→ 附件下载”中选择文件；最终保存为普通 Markdown 链接，也可以手动写 `[下载资料](<uploads/文件名.pdf>)`。
 - Markdown 支持标题、列表、表格、链接、图片；内嵌 HTML 按文本显示。新图片路径为 `uploads/...`；旧 `/uploads/...` 路径仍受支持。不要手动将草稿图片改成线上完整网址。
@@ -71,3 +71,16 @@ Markdown 模式支持撤销/重做以及 Ctrl/Cmd+B、I、Z 快捷键。切换�
 旧 `team/index.html`、`team/posts/`、`team/rules/index.html`、`team/resources.html` 保留，不再作为新构建的内容来源。部署使用 `_site/`，它只包含对读者公开的网站文件。后台样式和预览分别在 `admin/admin.css`、`admin/preview.css`、`admin/preview.js`，不需要修改 Decap 核心代码。
 
 参考：[Decap GitHub backend](https://decapcms.org/docs/github-backend/)。
+
+
+## 栏目、搜索与访问入口（新版）
+
+后台直接分为队伍文化宣传、规章制度、定向入门、名单公示和资料下载。名单公示源文件位于 `content/notices/`。原训练回顾/比赛故事在构建时归入队伍文化宣传，保留 `team/posts/` 文章网址；不删除或重写既有文章正文。
+
+四类文章列表分别为 `team/culture/`、`team/rules/`、`team/tutorials/`、`team/notices/`。首页标题为中山大学定向队，文章区为最新发布。所有队伍页面通过构建器共用页头、队徽和导航；手机端点击菜单展开。
+
+首页搜索框同时匹配已发布文章的标题、摘要与正文，可输入多个以空格分隔的关键词（需全部匹配），并叠加栏目筛选。结果展示匹配摘要；不解析图片、PDF、Word 附件内容。搜索在浏览器本地运行，不需要第三方服务。
+
+GitHub Pages 的 `/admin/` 根据域名自动跳转到 Netlify 后台；Netlify 的阅读页通过 `_redirects` 转到 GitHub Pages，对原有无 .html 的文章网址生成兼容跳转。后台及上传资源不使用全站通配跳转，避免影响登录和图片预览。Pages 的根指南内容仍原样复制。
+
+发布验证应看 GitHub Pages。Netlify 因仅内容更新跳过构建是预期状态；示例文章也会触发 Pages，已经替换成真实内容的旧示例无需删除。

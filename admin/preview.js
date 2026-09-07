@@ -27,7 +27,7 @@
       const cover = data.get('cover');
       const meta = data.get('example') ? '排版示例 · 非真实活动报道' : [data.get('date'), data.get('author')].filter(Boolean).join(' · ');
       return h('article', { className: 'cms-preview' },
-        h('p', { className: 'eyebrow' }, data.get('category') || (this.props.entry.get('collection') === 'rules' ? '队伍规程' : '队伍手记')),
+        h('p', { className: 'eyebrow' }, ({posts: '队伍文化宣传', rules: '规章制度', tutorials: '定向入门', notices: '名单公示'}[this.props.entry.get('collection')] || '中山大学定向队')),
         h('h1', {}, data.get('title') || '在左侧填写文章标题'),
         h('p', { className: 'meta' }, meta),
         cover ? h('img', { src: assetPreview(cover, this.props.getAsset), alt: data.get('cover_alt') || '' }) : null,
@@ -55,6 +55,7 @@
   CMS.registerPreviewTemplate('posts', ArticlePreview);
   CMS.registerPreviewTemplate('rules', ArticlePreview);
   CMS.registerPreviewTemplate('tutorials', ArticlePreview);
+  CMS.registerPreviewTemplate('notices', ArticlePreview);
   CMS.registerPreviewTemplate('resources', ResourcesPreview);
   // Adds an attachment picker to the Markdown insert menu; stores an ordinary
   // Markdown link so both the public site and other Markdown readers support it.

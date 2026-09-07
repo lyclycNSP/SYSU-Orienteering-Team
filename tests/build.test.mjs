@@ -20,7 +20,7 @@ test('Multiple CMS tutorials generate separate pages and guide category cards', 
       assert.ok(readFileSync(join(output, 'team/tutorials', `${slug}.html`), 'utf8').includes('学习步骤'));
     }
     assert.ok(home.includes('assets/team-logo.svg'));
-    assert.ok(home.includes('入门教程'));
+    assert.ok(home.includes('定向入门'));
     assert.ok(!home.includes('入门资料'));
     const cfg = parse(readFileSync(join(root, 'admin/config.yml'), 'utf8'));
     assert.equal(cfg.collections.find(c => c.name === 'tutorials').create, true);
@@ -34,6 +34,30 @@ test('CMS upload paths work under both hosts and reject unsafe paths', () => {
   assert.equal(assetUrl('/uploads/封面 图.jpg', '../'), '../uploads/%E5%B0%81%E9%9D%A2%20%E5%9B%BE.jpg');
   assert.equal(assetUrl('/SYSU-Orienteering-Team/uploads/a.jpg', '../../'), '../../uploads/a.jpg');
   for (const path of ['javascript:alert(1)', '/uploads/../index.html', '/uploads/%2e%2e/a', '//evil.test/a', '/uploads/a\\b']) assert.throws(() => assetUrl(path, '../'));
+});
+
+test('Public notices, shared navigation and cross-host redirects preserve article routes', () => {
+  const file = join(root, 'content/notices/qa-notice.md');
+  writeFileSync(file, '---\ntitle: 公示测试\nsummary: 名单说明\npublished: true\n---\n公示正文\n', { flag: 'wx' });
+  try {
+    const out = build();
+    for (const page of ['team/index.html', 'team/resources.html', 'team/culture/index.html', 'team/notices/index.html', 'team/notices/qa-notice.html']) {
+      const html = readFileSync(join(out, page), 'utf8');
+      assert.ok(html.includes('team-logo.svg'));
+      assert.ok(html.includes('名单公示'));
+      assert.ok(!html.includes('栏目建设中'));
+      assert.ok(!html.includes('队伍手记'));
+    }
+    const redirect = readFileSync(join(out, '_redirects'), 'utf8');
+    assert.ok(redirect.includes('/team/notices/qa-notice https://lyclycnsp.github.io/SYSU-Orienteering-Team/team/notices/qa-notice.html 302!'));
+    assert.ok(!redirect.includes('/* https://lyclycnsp.github.io/SYSU-Orienteering-Team/ 302!'));
+    assert.ok(readFileSync(join(out, 'admin/index.html'), 'utf8').includes('location.hostname === "lyclycnsp.github.io"'));
+    const config = parse(readFileSync(join(root, 'admin/config.yml'), 'utf8'));
+    assert.deepEqual(config.collections.map(c => c.label), ['队伍文化宣传', '规章制度', '定向入门', '名单公示', '资料下载']);
+  } finally {
+    unlinkSync(file);
+    build();
+  }
 });
 
 test('Markdown supports structure, escapes HTML, and rewrites uploads', () => {
