@@ -1,7 +1,7 @@
 ---
 title: 2026年瑞典世界青年定向锦标赛
 category: 比赛故事
-summary: 比赛介绍、队员感想与精彩瞬间，让每一次出发都留下记录。
+summary: 再一次站上赛场，我将尽我所能，全力以赴。
 date: 2026-09-07
 author: Yueqiao Wang
 cover: uploads/微信图片_20260715221420_56_114.jpg
