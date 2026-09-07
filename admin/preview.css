@@ -1,0 +1,14 @@
+body { margin: 0; padding: 30px; background: #f6f5ee; color: #173f35; font: 16px/1.85 "Microsoft YaHei", system-ui, sans-serif; }
+.cms-preview { max-width: 760px; margin: auto; overflow-wrap: anywhere; }
+.cms-preview .eyebrow { color: #63786d; font-size: 12px; letter-spacing: .14em; }
+.cms-preview h1 { font-size: 32px; line-height: 1.4; margin: 16px 0; }
+.cms-preview h2 { font-size: 23px; margin: 32px 0 16px; }
+.cms-preview .meta { color: #63786d; font-size: 13px; padding-bottom: 20px; border-bottom: 1px solid #d9e0d5; }
+.cms-preview img { max-width: 100%; height: auto; border-radius: 8px; display: block; margin: 24px auto; }
+.cms-preview blockquote { margin: 20px 0; padding: 12px 20px; border-left: 3px solid #b38b44; background: #f0eadb; }
+.cms-preview a { color: #286650; text-underline-offset: 3px; }
+.cms-preview pre, .cms-preview table { display: block; overflow-x: auto; }
+.cms-preview th, .cms-preview td { border: 1px solid #d9e0d5; padding: 8px; }
+.cms-resource { background: white; border: 1px solid #d9e0d5; padding: 22px; border-radius: 10px; margin: 20px 0; }
+.cms-resource .download { display: inline-block; padding: 8px 16px; border-radius: 5px; background: #d6ed9c; color: #173f35; }
+@media(max-width:500px) { body { padding: 18px; } .cms-preview h1 { font-size: 27px; } }

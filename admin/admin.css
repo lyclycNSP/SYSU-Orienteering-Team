@@ -1,0 +1,20 @@
+/* Keep Decap's controls and responsive layout; customize its visual treatment. */
+body { font-family: "Microsoft YaHei", system-ui, sans-serif; background: #f6f5ee; color: #173f35; }
+header { box-shadow: 0 2px 12px #173f3512; }
+[class*="Sidebar"] { background-color: #edf0e5; }
+[class*="CollectionTop"], [class*="EditorContainer"] { background-color: #f6f5ee; }
+[class*="Card"] { border-radius: 10px; }
+input, textarea, select, [contenteditable="true"] { font-family: inherit; line-height: 1.8; }
+input:focus, textarea:focus, select:focus { outline-color: #547955; }
+button { border-radius: 6px; }
+[class*="FieldLabel"] { color: #173f35 !important; background: transparent !important; font-size: 14px !important; font-weight: 600 !important; }
+[class*="ControlTopbar"] { background: #edf0e5 !important; padding: 8px 12px; border-radius: 6px 6px 0 0; }
+[class*="ControlContainer"] { border-color: #d9e0d5 !important; border-radius: 0 0 6px 6px; }
+[class*="ControlContainer"] > input, [class*="ControlContainer"] > textarea { font-size: 15px !important; }
+.team-editor-modes { display: flex; gap: 6px; padding: 10px; background: #edf0e5; }
+.team-editor-modes button, .team-markdown-toolbar button { padding: 7px 10px; border: 1px solid #cbd6c8; background: white; color: #173f35; cursor: pointer; font-family: inherit; font-size: 13px; line-height: 1.5; }
+.team-editor-modes button[aria-pressed=true] { background: #173f35; color: white; }
+.team-markdown-toolbar { display: flex; flex-wrap: wrap; gap: 5px; padding: 10px; border-bottom: 1px solid #d9e0d5; }
+.team-editor textarea { width: 100%; min-height: 420px; resize: vertical; border: 0; padding: 18px; font: 15px/1.8 Consolas, monospace; color: #173f35; background: white; }
+.team-editor button:focus-visible { outline: 2px solid #b38b44; outline-offset: 2px; }
+.team-editor button:disabled { opacity: .5; cursor: default; }

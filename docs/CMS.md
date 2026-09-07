@@ -29,23 +29,32 @@ python -m http.server 8766 --bind 127.0.0.1 --directory _site
 
 ## 日常编辑
 
+正文上方可切换“富文本 / Markdown”，两种模式均有快捷工具栏。富文本沿用 Decap 原生操作；Markdown 模式直接在选区或光标处插入语法，支持加粗、斜体、删除线、标题、列表、引用、代码、链接、图片和附件。图片/附件按钮打开同一个媒体库，选择后自动插入链接，并支持未发布图片的右侧预览。
+
+Markdown 模式支持撤销/重做以及 Ctrl/Cmd+B、I、Z 快捷键。切换模式会清空该模式的撤销记录，但保留当前正文；富文本转换可能统一空行等 Markdown 写法，特殊语法建议始终使用 Markdown 模式。编辑器扩展位于 `admin/markdown-editor.js`，没有修改 Decap 核心文件。
+
 - “队伍手记”：填写标题、摘要、正文等。封面可上传插图或照片，建议横图。首页裁剪铺满卡片顶部，正文页显示完整比例。空封面保留等高线图案。
-- “固定页面 → 队伍规程”：编辑规程正文；目前仍为明确标注的占位内容，尚未录入正式条文。
-- Markdown 支持标题、列表、表格、链接、图片；内嵌 HTML 按文本显示。图片使用上传生成的 `/uploads/...` 或 HTTPS 地址。
+- “队伍规程”：像手记一样新建多篇文章。`/team/rules/` 展示规程列表，首页有“队伍规程”筛选。原规程内容完整保留为一篇文章，文件仍在 `content/rules/index.md`，阅读地址为 `/team/rules/doc-index.html`；新文章使用 `doc-文件名.html`。
+- “资料下载 → 下载资料列表”：添加、删除、排序资料条目，填写名称和说明，用“文件”字段上传 PDF、Word 等附件。原指南和 IOF 下载入口继续保留。
+- 正文使用富文本模式时，可在“添加组件（＋）→ 附件下载”中选择文件；最终保存为普通 Markdown 链接，也可以手动写 `[下载资料](<uploads/文件名.pdf>)`。
+- Markdown 支持标题、列表、表格、链接、图片；内嵌 HTML 按文本显示。新图片路径为 `uploads/...`；旧 `/uploads/...` 路径仍受支持。不要手动将草稿图片改成线上完整网址。
 - 点击发布后，Markdown 和上传文件写入 GitHub，两边自动构建。关闭“在网站显示”会隐藏文章，但文件仍在公开仓库中，不可用来保存私密内容。删除文章后构建也会移除对应网页。
-- 后台 Markdown 预览是内容预览；完整网站排版以构建后的预览为准。
+- 后台右侧采用队伍网站字体、配色和正文样式，支持封面和正文图片的即时预览；最终导航和首页卡片以构建后的网站为准。
+- 图片库“草稿”表示图片还没随文章发布，不意味着不能预览。选择图片后，右侧预览通过 Decap 临时资源缓存显示；未发布前不要依赖其网站 URL。
+- “标记为示例文章”只添加“排版示例 / 非真实活动报道”字样，正式文章请关闭；它不影响是否发布，也不等同于草稿状态。
 
 ## 文件分工
 
 - `admin/`：后台及字段配置，不含密钥。
 - `content/posts/*.md`：文章源文件。示例地址继续使用 `training-example.html` 和 `race-example.html`。
-- `content/rules/index.md`：规程源文件。
+- `content/rules/*.md`：多篇规程源文件。
+- `content/resources.yml`：下载页标题、简介和有序文件列表。
 - `uploads/`：封面、正文图片和附件。
 - `templates/`：首页及文章布局；首页文案在这里修改。
 - `team/style.css`、`team/content.css`：队伍栏目样式。
 - `scripts/build.mjs`：只写入生成目录 `_site/`，不修改指南。
 - `package-lock.json`：锁定 Markdown、YAML 解析依赖。使用成熟解析器，避免自制解析器遗漏常见语法。
 
-旧 `team/index.html`、`team/posts/`、`team/rules/index.html` 保留，不再作为新构建的文章来源。部署使用 `_site/`，它只包含对读者公开的网站文件。
+旧 `team/index.html`、`team/posts/`、`team/rules/index.html`、`team/resources.html` 保留，不再作为新构建的内容来源。部署使用 `_site/`，它只包含对读者公开的网站文件。后台样式和预览分别在 `admin/admin.css`、`admin/preview.css`、`admin/preview.js`，不需要修改 Decap 核心代码。
 
 参考：[Decap GitHub backend](https://decapcms.org/docs/github-backend/)。

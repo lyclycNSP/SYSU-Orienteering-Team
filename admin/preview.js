@@ -1,0 +1,73 @@
+/* global CMS, h, createClass, markdownit */
+(() => {
+  function assetPreview(path, getAsset) {
+    if (!path) return '';
+    // Markdown parsers encode Chinese filenames. Decap's in-memory asset keys
+    // use the original upload path, so resolve that before requesting a URL.
+    let decoded = String(path);
+    try { decoded = decodeURIComponent(decoded); } catch { /* Keep malformed text for Decap to report. */ }
+    // A leading slash is treated as a public URL by Decap and bypasses its
+    // draft asset cache. Our repository stores all CMS uploads in uploads/.
+    const lookup = decoded.replace(/^\/(?:SYSU-Orienteering-Team\/)?uploads\//, 'uploads/');
+    const asset = getAsset(lookup);
+    return asset ? asset.toString() : decoded;
+  }
+  function renderBody(body, getAsset) {
+    const parser = markdownit({ html: false, linkify: true });
+    const imageRule = parser.renderer.rules.image;
+    parser.renderer.rules.image = (tokens, index, options, env, renderer) => {
+      tokens[index].attrSet('src', assetPreview(tokens[index].attrGet('src'), getAsset));
+      return imageRule(tokens, index, options, env, renderer);
+    };
+    return parser.render(body || '');
+  }
+  const ArticlePreview = createClass({
+    render() {
+      const data = this.props.entry.get('data');
+      const cover = data.get('cover');
+      const meta = data.get('example') ? '排版示例 · 非真实活动报道' : [data.get('date'), data.get('author')].filter(Boolean).join(' · ');
+      return h('article', { className: 'cms-preview' },
+        h('p', { className: 'eyebrow' }, data.get('category') || (this.props.entry.get('collection') === 'rules' ? '队伍规程' : '队伍手记')),
+        h('h1', {}, data.get('title') || '在左侧填写文章标题'),
+        h('p', { className: 'meta' }, meta),
+        cover ? h('img', { src: assetPreview(cover, this.props.getAsset), alt: data.get('cover_alt') || '' }) : null,
+        h('div', { dangerouslySetInnerHTML: { __html: renderBody(data.get('body'), this.props.getAsset) } })
+      );
+    }
+  });
+  const ResourcesPreview = createClass({
+    render() {
+      const data = this.props.entry.get('data');
+      const items = data.get('items');
+      return h('article', { className: 'cms-preview' },
+        h('p', { className: 'eyebrow' }, 'RESOURCES'),
+        h('h1', {}, data.get('title') || '资料下载'),
+        h('p', { className: 'meta' }, data.get('summary')),
+        items ? items.map((item, index) => h('section', { className: 'cms-resource', key: index },
+          h('h2', {}, item.get('title')), h('p', {}, item.get('description')),
+          h('span', { className: 'download' }, item.get('button') || '下载文件 ↓'),
+          h('p', {}, item.get('file') || '请选择附件')
+        )).toArray() : null
+      );
+    }
+  });
+  CMS.registerPreviewStyle('preview.css');
+  CMS.registerPreviewTemplate('posts', ArticlePreview);
+  CMS.registerPreviewTemplate('rules', ArticlePreview);
+  CMS.registerPreviewTemplate('resources', ResourcesPreview);
+  // Adds an attachment picker to the Markdown insert menu; stores an ordinary
+  // Markdown link so both the public site and other Markdown readers support it.
+  CMS.registerEditorComponent({
+    id: 'attachment', label: '附件下载',
+    fields: [
+      { name: 'title', label: '链接文字', widget: 'string', default: '下载附件' },
+      { name: 'file', label: '附件', widget: 'file' }
+    ],
+    pattern: /^\[([^\]\n]+)\]\(<([^>\n]+)>\)$/,
+    fromBlock: match => ({ title: match[1], file: match[2] }),
+    toBlock: data => `[${String(data.title || '下载附件').replace(/[\[\]\r\n]/g, '')}](<${String(data.file || '').replace(/[<>\r\n]/g, '')}>)`,
+    toPreview: data => h('span', {}, '↓ ', data.title || '下载附件', ' · ', data.file || '请选择文件')
+  });
+  // Expose pure preview helpers for regression tests without an OAuth session.
+  window.TeamCMSPreview = { assetPreview, renderBody };
+})();

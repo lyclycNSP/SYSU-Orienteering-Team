@@ -5,7 +5,7 @@ backend:
 
 locale: zh_Hans
 media_folder: uploads
-public_folder: /uploads
+public_folder: uploads
 display_url: https://lyclycnsp.github.io/SYSU-Orienteering-Team/team/
 
 collections:
@@ -31,16 +31,42 @@ collections:
         required: false
         hint: 可选。首页卡片顶部显示，建议横图；留空使用等高线图案。正文页会显示完整图片。
       - {label: 封面图片说明, name: cover_alt, widget: string, required: false, hint: 简短描述图片内容，方便屏幕阅读器使用。}
-      - {label: 是否为排版示例, name: example, widget: boolean, default: false}
+      - {label: 标记为示例文章, name: example, widget: boolean, default: false, hint: 开启后读者会看到“排版示例 / 非真实活动报道”。正式文章请关闭，不影响发布权限。}
       - {label: 在网站显示, name: published, widget: boolean, default: true, hint: 关闭后不生成网页，但文件仍存于公开仓库，请勿用来保存私密内容。}
-      - {label: 正文, name: body, widget: markdown}
-  - name: pages
-    label: 固定页面
+      - {label: 正文, name: body, widget: team-markdown}
+  - name: rules
+    label: 队伍规程
+    label_singular: 规程文章
+    folder: content/rules
+    create: true
+    slug: '{{slug}}'
+    extension: md
+    format: frontmatter
+    fields:
+      - {label: 标题, name: title, widget: string}
+      - {label: 简介, name: summary, widget: text}
+      - {label: 日期, name: date, widget: datetime, required: false, date_format: 'YYYY-MM-DD', time_format: false, format: 'YYYY-MM-DD', default: ''}
+      - {label: 作者或发布单位, name: author, widget: string, required: false}
+      - {label: 封面插图或照片, name: cover, widget: image, required: false}
+      - {label: 图片说明, name: cover_alt, widget: string, required: false}
+      - {label: 在网站显示, name: published, widget: boolean, default: true}
+      - {label: 正文, name: body, widget: team-markdown}
+  - name: downloads
+    label: 资料下载
     files:
-      - name: rules
-        label: 队伍规程
-        file: content/rules/index.md
+      - name: resources
+        label: 下载资料列表
+        file: content/resources.yml
         fields:
-          - {label: 标题, name: title, widget: string}
+          - {label: 页面标题, name: title, widget: string}
           - {label: 简介, name: summary, widget: text}
-          - {label: 正文, name: body, widget: markdown}
+          - label: 资料条目
+            name: items
+            widget: list
+            summary: '{{fields.title}}'
+            fields:
+              - {label: 资料名称, name: title, widget: string}
+              - {label: 说明, name: description, widget: text, required: false}
+              - {label: 文件, name: file, widget: file, hint: 可上传 PDF、Word、表格等附件，或选择已上传文件。}
+              - {label: 下载按钮文字, name: button, widget: string, default: 下载文件 ↓}
+              - {label: 在线阅读地址, name: online_url, widget: string, required: false}
