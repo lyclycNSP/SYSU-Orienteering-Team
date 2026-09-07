@@ -2,14 +2,13 @@
 title: 一次训练，留下哪些值得复盘的事？
 category: 训练回顾
 summary: 从路线选择到失误分析，把跑过的路整理成下一次出发的经验。
-date: ''
-author: ''
-cover: ''
-cover_alt: ''
+date: 2026-09-07
+author: ""
+cover: /uploads/测试图.jpg
+cover_alt: ""
 example: true
 published: true
 ---
-
 > 这是一篇用于预览文章结构的示例。时间、作者、照片和正式正文将在提供实际内容后加入。
 
 ## 训练概况
@@ -23,4 +22,3 @@ published: true
 ## 带走一个小收获
 
 记录本次训练得到的具体经验，以及下一次准备练习的内容。比起只有完成情况，一条清楚的复盘更方便日后回看。
-
