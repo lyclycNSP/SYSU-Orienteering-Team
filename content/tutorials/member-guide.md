@@ -1,7 +1,7 @@
 ---
 title: 第一次接触定向，从这里开始
 summary: 图例速查、创作者推荐和实用工具，随时查阅，也可以下载 PDF。
-date: 2025-01-07
+date: 2026-09-07
 author: 中山大学定向队
 cover: uploads/guide-cover.webp
 cover_alt: 队员手持定向地图，在跑道旁查看路线
@@ -53,6 +53,8 @@ published: true
 
 ![综合总览 · 辅助查阅](uploads/guide-overview.jpg)
 
+---
+
 ## 02 微信公众号
 
 ### 老硬币迷路互助会
@@ -90,6 +92,7 @@ published: true
 
 推荐文章：[回顾 | 2026年小谷围高校定向运动联合训练·第二场](https://mp.weixin.qq.com/s/PWUwijyTI35uCOWHehEn-w)。
 
+---
 
 ## 03 B站视频/账号
 
@@ -144,6 +147,8 @@ published: true
 
 推荐视频：[2026年“寻找美丽中华”全国旅游城市定向系列赛（浙江海盐站）](https://www.bilibili.com/video/BV16wVd6xEiY/)。
 
+---
+
 ## 04 网站推荐
 
 ### 小谷围高校定向联盟
@@ -163,6 +168,8 @@ published: true
 [Livelox](https://www.livelox.com/)：赛后路线复盘和 GPS 轨迹比较平台，可上传手表/手机记录的轨迹，在赛事地图上回放、对比选路和分析分段。适合训练后和队友一起复盘“在哪里犹豫、绕路或出点”。大陆网络可先直接访问；若地图、轨迹或登录加载不稳定，可能需要代理。
 
 Livelox使用教程：[LiveLox定向越野轨迹回放教程（包含 Livelox Recorder 手机轨迹记录导入）](https://www.bilibili.com/video/BV1xs421u7di/)：讲解用 Livelox 做轨迹回放、导入 GPX/手机记录，适合第一次复盘前看。
+
+---
 
 ## 05 应用推荐
 
