@@ -11,20 +11,10 @@ published: true
 
 待加入确认后的正式版本，并标注适用范围、版本和生效日期。
 
-[下载附件](<uploads/articles/rules/799d74ba-7c03-4469-a118-61bd193ef3f9/IOF Control Descriptions 2024-58fe175c.pdf>) [PDF预览](<uploads/articles/rules/799d74ba-7c03-4469-a118-61bd193ef3f9/IOF Control Descriptions 2024-58fe175c.pdf>)
-
 ## 02 / 训练与参与
 
 预留训练安排、报名方式及参与要求的查阅位置。
 
-![](uploads/resources/微信图片_20260715221421_57_114.jpg)
-
 ## 03 / 参赛与队伍事务
 
 预留参赛流程、队伍事务与相关附件的位置。
-
-## 04 测试
-
-![](uploads/resources/微信图片_20260715221409_46_114.jpg)
-
-![]()
