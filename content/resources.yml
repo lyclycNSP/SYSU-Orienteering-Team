@@ -1,6 +1,12 @@
 title: 出发前的资料包
 summary: 以下链接使用现有指南与附件。
 items:
+  - button: 下载文件 ↓
+    title: 中山大学定向队队员日常规章制度
+    file: uploads/中山大学定向越野队队伍日常规章制度初稿.docx
+  - button: 下载文件 ↓
+    file: uploads/2026中山大学定向队试训队员章程（试行）-优化版v2.docx
+    title: 2026中山大学定向队试训队员章程
   - title: 定向越野指南
     description: 图例速查、公众号与视频推荐，以及网站和应用工具。
     file: /定向越野指南-中山大学定向队.pdf
@@ -13,3 +19,6 @@ items:
   - button: 下载比赛记录 ↓
     file: uploads/21-25定向队比赛记录.docx
     title: 21-25定向队比赛记录
+  - button: 下载文件 ↓
+    title: 01-19定向队比赛记录
+    file: uploads/中大定向发展史20221007-2-1-.doc
