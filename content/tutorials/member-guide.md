@@ -1,7 +1,7 @@
 ---
 title: 第一次接触定向，从这里开始
 summary: 图例速查、创作者推荐和实用工具，随时查阅，也可以下载 PDF。
-date: 2026-09-07
+date: 2025-01-07
 author: 中山大学定向队
 cover: uploads/guide-cover.webp
 cover_alt: 队员手持定向地图，在跑道旁查看路线
