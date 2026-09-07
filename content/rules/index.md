@@ -1,6 +1,8 @@
 ---
-title: 队伍规程
+title: 队伍事务
 summary: 把共同遵守的约定，放在方便查阅的地方。
+cover: uploads/4f7fbfdce4f4c79613b5fc1ecbac11b8.jpg
+published: true
 ---
 > 本页为栏目结构预览，正式条文尚未录入。以下仅展示内容分区，不代表已经生效的队伍规定。
 
