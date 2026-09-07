@@ -84,3 +84,7 @@ Markdown 模式支持撤销/重做以及 Ctrl/Cmd+B、I、Z 快捷键。切换�
 GitHub Pages 的 `/admin/` 根据域名自动跳转到 Netlify 后台；Netlify 的阅读页通过 `_redirects` 转到 GitHub Pages，对原有无 .html 的文章网址生成兼容跳转。后台及上传资源不使用全站通配跳转，避免影响登录和图片预览。Pages 的根指南内容仍原样复制。
 
 发布验证应看 GitHub Pages。Netlify 因仅内容更新跳过构建是预期状态；示例文章也会触发 Pages，已经替换成真实内容的旧示例无需删除。
+
+空图片占位（例如 Markdown 的 ![]()）在发布页面忽略，在右侧预览提示补选或删除，不再阻断整站构建。非空非法路径仍报错。Decap 3.16 可能残留部署预览等待按钮，admin/ui.js 仅隐藏对应按钮，保留即时预览开关。
+
+定向入门中的 member-guide.md 是 README 指南的独立副本，封面及图例位于 uploads/guide-*，可在后台编辑；首页已取消硬编码跳转卡片。修改该文章不会同步改动根指南、README 或 PDF。原指南入口继续保留。

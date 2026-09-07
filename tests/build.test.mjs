@@ -76,6 +76,10 @@ test('Public notices, shared navigation and cross-host redirects preserve articl
 });
 
 test('Markdown supports structure, escapes HTML, and rewrites uploads', () => {
+  const placeholder = renderMarkdown('前文\n\n![]()\n\n![合影](uploads/a.jpg)\n\n后文');
+  assert.ok(placeholder.includes('前文') && placeholder.includes('后文'));
+  assert.equal((placeholder.match(/<img /g) || []).length, 1);
+  assert.throws(() => renderMarkdown('![图](../private.jpg)'));
   const html = renderMarkdown('## 标题\n\n- 内容\n\n| A | B |\n| --- | --- |\n| 1 | 2 |\n\n![图](/uploads/a.jpg)\n\n[附件](/uploads/a.pdf)\n\n<script>alert(1)</script>\n\n[x](javascript:alert(1))');
   assert.match(html, /<h2>标题<\/h2>/);
   assert.match(html, /<table>/);

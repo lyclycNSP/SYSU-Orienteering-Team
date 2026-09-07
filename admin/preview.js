@@ -16,6 +16,7 @@
     const parser = markdownit({ html: false, linkify: true });
     const imageRule = parser.renderer.rules.image;
     parser.renderer.rules.image = (tokens, index, options, env, renderer) => {
+      if (!(tokens[index].attrGet('src') || '').trim()) return '<span class="empty-image-hint">图片尚未选择，请选择图片或删除这个空占位。</span>';
       tokens[index].attrSet('src', assetPreview(tokens[index].attrGet('src'), getAsset));
       return imageRule(tokens, index, options, env, renderer);
     };

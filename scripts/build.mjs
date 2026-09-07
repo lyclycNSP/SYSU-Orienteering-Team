@@ -36,6 +36,9 @@ export function renderMarkdown(body, prefix = '../../') {
   const imageRule = md.renderer.rules.image;
   md.renderer.rules.image = (tokens, index, options, env, renderer) => {
     const token = tokens[index];
+    // Native rich-text editing can serialize an unselected image as ![]().
+    // It contains no asset to publish; do not let it block unrelated articles.
+    if (!(token.attrGet('src') || '').trim()) return '';
     token.attrSet('src', assetUrl(token.attrGet('src'), prefix));
     token.attrSet('loading', 'lazy');
     return imageRule(tokens, index, options, env, renderer);
@@ -105,7 +108,6 @@ export function build() {
   const articles = [...posts, ...rules, ...tutorials, ...notices].sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')) || b.slug.localeCompare(a.slug));
   const pages = new Map();
   const cards = articles.map((post, index) => articleCard(post, index));
-  cards.push('<article class="card" data-category="guide"><a href="../index.html"><div class="art guide" aria-hidden="true">△</div><div class="card-body"><span class="tag">定向入门 · 已有指南</span><h3>第一次接触定向，从这里开始</h3><p>图例速查、创作者推荐和实用工具，随时查阅，也可以下载 PDF。</p><div class="card-foot"><span>队员指南</span><span>阅读全文 ↗</span></div></div></a></article>');
   pages.set('team/index.html', template('home.html', { cards: cards.join('\n'), count: cards.length }));
   for (const post of articles) {
     const cover = post.cover ? `<img class="article-cover" src="${escape(assetUrl(post.cover, '../../'))}" alt="${escape(post.cover_alt)}">` : '';
