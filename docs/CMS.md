@@ -25,7 +25,15 @@ python -m http.server 8766 --bind 127.0.0.1 --directory _site
 4. GitHub OAuth App 回调为 `https://api.netlify.com/auth/done`；Client Secret 只保存在 Netlify 的 OAuth Provider 中，不写进 `admin/config.yml`。默认使用当前 Netlify 域名识别 OAuth 站点，所以先在 Netlify 的 `/admin/` 登录。
 5. 在 GitHub 仓库 Settings → Collaborators 邀请编辑同学并授予写入权限，同学接受邀请后，用自己的 GitHub 账号登录后台。此权限是仓库写入权限，并非仅限文章。
 
-首次用有权限的账号登录、修改并发布示例文章，确认 GitHub 出现提交、Actions 和 Netlify 构建成功、两端文章更新，才算完整联调完成。后台页面可以公开访问，写入仍需 GitHub 授权。
+首次部署后台后，用有权限的账号登录、修改并发布示例文章，确认 GitHub 出现提交、Pages Actions 构建成功、GitHub Pages 文章更新。仅内容变更时 Netlify 应跳过构建。后台页面可以公开访问，写入仍需 GitHub 授权。
+
+## Netlify 构建额度优化
+
+`netlify.toml` 的 `ignore` 命令运行 `scripts/netlify-ignore.mjs`，比较 Netlify 的 `CACHED_COMMIT_REF` 与 `COMMIT_REF`。仅 `content/`、`uploads/` 有变化（或无变化）时退出 0，跳过 Netlify 构建；其他文件变化、首次部署或 Git 历史不可用时退出 1，正常构建。脚本无需安装依赖。重命名同时检查原路径和新路径，避免漏掉后台文件移出。
+
+GitHub Pages 仍响应 main 的所有提交。Decap 通过 GitHub 后端读写文章和媒体，无需部署 Netlify 即可继续编辑；文章、规程和下载页请在 GitHub Pages 阅读，Netlify 副本在下次实际部署前保持旧内容。后台访问仍产生请求和流量额度。
+
+规则提交并推送后才生效，本次配置更新会正常部署一次。后续内容提交可能显示 Netlify 构建取消/跳过，这是预期行为。Netlify Build Hook 触发的构建不受 ignore 命令取消控制，不要另设每次发布文章调用 Build Hook 的流程。参考：[Netlify Ignore builds](https://docs.netlify.com/build/configure-builds/ignore-builds/)。
 
 ## 日常编辑
 
@@ -38,7 +46,7 @@ Markdown 模式支持撤销/重做以及 Ctrl/Cmd+B、I、Z 快捷键。切换�
 - “资料下载 → 下载资料列表”：添加、删除、排序资料条目，填写名称和说明，用“文件”字段上传 PDF、Word 等附件。原指南和 IOF 下载入口继续保留。
 - 正文使用富文本模式时，可在“添加组件（＋）→ 附件下载”中选择文件；最终保存为普通 Markdown 链接，也可以手动写 `[下载资料](<uploads/文件名.pdf>)`。
 - Markdown 支持标题、列表、表格、链接、图片；内嵌 HTML 按文本显示。新图片路径为 `uploads/...`；旧 `/uploads/...` 路径仍受支持。不要手动将草稿图片改成线上完整网址。
-- 点击发布后，Markdown 和上传文件写入 GitHub，两边自动构建。关闭“在网站显示”会隐藏文章，但文件仍在公开仓库中，不可用来保存私密内容。删除文章后构建也会移除对应网页。
+- 点击发布后，Markdown 和上传文件写入 GitHub，GitHub Pages 自动构建；仅内容和媒体变化时 Netlify 跳过构建。关闭“在网站显示”会隐藏文章，但文件仍在公开仓库中，不可用来保存私密内容。删除文章后 Pages 构建也会移除对应网页。
 - 后台右侧采用队伍网站字体、配色和正文样式，支持封面和正文图片的即时预览；最终导航和首页卡片以构建后的网站为准。
 - 图片库“草稿”表示图片还没随文章发布，不意味着不能预览。选择图片后，右侧预览通过 Decap 临时资源缓存显示；未发布前不要依赖其网站 URL。
 - “标记为示例文章”只添加“排版示例 / 非真实活动报道”字样，正式文章请关闭；它不影响是否发布，也不等同于草稿状态。
