@@ -11,7 +11,7 @@ display_url: https://lyclycnsp.github.io/SYSU-Orienteering-Team/team/
 
 collections:
   - name: posts
-    label: 队伍文化宣传
+    label: 比赛故事
     label_singular: 文章
     folder: content/posts
     create: true
@@ -22,7 +22,7 @@ collections:
     summary: '{{title}}'
     fields:
       - {label: 标题, name: title, widget: string}
-      - {name: category, widget: hidden, default: 队伍文化宣传}
+      - {name: category, widget: hidden, default: 比赛故事}
       - {label: 摘要, name: summary, widget: text}
       - {label: 日期, name: date, widget: datetime, required: false, date_format: 'YYYY-MM-DD', time_format: false, format: 'YYYY-MM-DD', default: ''}
       - {label: 作者, name: author, widget: string, required: false}

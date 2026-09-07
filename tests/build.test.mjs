@@ -68,7 +68,7 @@ test('Public notices, shared navigation and cross-host redirects preserve articl
     assert.ok(!redirect.includes('/* https://lyclycnsp.github.io/SYSU-Orienteering-Team/ 302!'));
     assert.ok(readFileSync(join(out, 'admin/index.html'), 'utf8').includes('location.hostname === "lyclycnsp.github.io"'));
     const config = parse(readFileSync(join(root, 'admin/config.yml'), 'utf8'));
-    assert.deepEqual(config.collections.map(c => c.label), ['队伍文化宣传', '规章制度', '定向入门', '名单公示', '资料下载']);
+    assert.deepEqual(config.collections.map(c => c.label), ['比赛故事', '规章制度', '定向入门', '名单公示', '资料下载']);
   } finally {
     unlinkSync(file);
     build();

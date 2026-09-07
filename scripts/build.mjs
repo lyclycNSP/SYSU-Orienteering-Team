@@ -5,8 +5,8 @@ import MarkdownIt from 'markdown-it';
 import { parse } from 'yaml';
 
 export const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const categories = { '队伍文化宣传': 'culture', '定向入门': 'guide', '规章制度': 'rules', '名单公示': 'notices' };
-const aliases = { '训练回顾': '队伍文化宣传', '比赛故事': '队伍文化宣传', '入门资料': '定向入门', '入门教程': '定向入门', '队伍规程': '规章制度' };
+const categories = { '比赛故事': 'culture', '定向入门': 'guide', '规章制度': 'rules', '名单公示': 'notices' };
+const aliases = { '训练回顾': '比赛故事', '队伍文化宣传': '比赛故事', '入门资料': '定向入门', '入门教程': '定向入门', '队伍规程': '规章制度' };
 const categoryPaths = { culture: 'culture', guide: 'tutorials', rules: 'rules', notices: 'notices' };
 const normalizeCategory = category => aliases[category] || category;
 const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
@@ -69,7 +69,7 @@ export function readContent(file) {
 
 function siteHeader(prefix) {
   const base = `${prefix}team/`;
-  const links = [['首页', 'index.html'], ['定向入门', 'tutorials/'], ['规章制度', 'rules/'], ['名单公示', 'notices/'], ['队伍文化宣传', 'culture/'], ['资料下载', 'resources.html'], ['搜索', 'index.html#search']];
+  const links = [['首页', 'index.html'], ['定向入门', 'tutorials/'], ['规章制度', 'rules/'], ['名单公示', 'notices/'], ['比赛故事', 'culture/'], ['资料下载', 'resources.html'], ['搜索', 'index.html#search']];
   return `<header class="wrap top"><a class="brand" href="${base}"><img class="team-logo" src="${prefix}assets/team-logo.svg" alt="中山大学定向队队徽"><span>中山大学定向队<small>SYSU ORIENTEERING TEAM</small></span></a><button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-nav">菜单 ☰</button><nav id="site-nav" class="nav" aria-label="主导航">${links.map(([label, path]) => `<a href="${base}${path}">${label}</a>`).join('')}</nav></header>`;
 }
 
