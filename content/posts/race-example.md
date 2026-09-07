@@ -2,10 +2,10 @@
 title: 把赛场上的故事，留在这里
 category: 比赛故事
 summary: 比赛介绍、队员感想与精彩瞬间，让每一次出发都留下记录。
-date: ''
-author: ''
-cover: ''
-cover_alt: ''
+date: ""
+author: ""
+cover: uploads/7a79a7d52b86feb2fb6c1c0b1590c668.jpg
+cover_alt: ""
 example: true
 published: true
 ---
