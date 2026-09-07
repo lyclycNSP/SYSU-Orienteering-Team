@@ -3,12 +3,13 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
 import MarkdownIt from 'markdown-it';
+import * as TeamAttachments from '../scripts/attachments.mjs';
 
 function previewHarness() {
   const templates = {};
   const components = {};
   const context = {
-    window: {}, markdownit: MarkdownIt, createClass: value => value,
+    window: { TeamAttachments }, markdownit: MarkdownIt, createClass: value => value,
     h: (type, props, ...children) => ({ type, props, children }),
     CMS: {
       registerPreviewStyle() {},
@@ -44,4 +45,16 @@ test('Attachment insert component uses portable Markdown and has a file picker',
   const result = attachment.fromBlock(block.match(attachment.pattern));
   assert.equal(result.file, 'uploads/比赛 记录.docx');
   assert.equal(result.title, '下载资料');
+  const paired = attachment.toBlock({ title: 'Word原件', file: 'uploads/resources/rules.docx', preview: 'uploads/resources/rules.pdf' });
+  assert.equal(attachment.fromBlock(paired.match(attachment.pattern)).preview, 'uploads/resources/rules.pdf');
+});
+
+test('Unpublished PDF links use the draft blob URL for preview and download', () => {
+  const preview = previewHarness();
+  const html = preview.renderBody('[PDF](<uploads/articles/posts/id/说明.pdf>)', path => {
+    assert.equal(path, 'uploads/articles/posts/id/说明.pdf');
+    return { toString: () => 'blob:https://example.test/pdf' };
+  });
+  assert.equal((html.match(/href="blob:https:\/\/example.test\/pdf"/g) || []).length, 2);
+  assert.match(html, /target="_blank"/);
 });

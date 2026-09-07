@@ -3,6 +3,7 @@ import { resolve, join, dirname, basename } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import MarkdownIt from 'markdown-it';
 import { parse } from 'yaml';
+import { attachmentLinks, isPDF } from './attachments.mjs';
 
 export const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const categories = { '比赛故事': 'culture', '定向入门': 'guide', '规章制度': 'rules', '名单公示': 'notices' };
@@ -50,6 +51,7 @@ export function renderMarkdown(body, prefix = '../../') {
     if (/^(?:\/(?:SYSU-Orienteering-Team\/)?)?uploads\//.test(href)) token.attrSet('href', assetUrl(href, prefix));
     return linkRule(tokens, index, options, env, renderer);
   };
+  attachmentLinks(md, href => /^(?:\/(?:SYSU-Orienteering-Team\/)?)?uploads\//.test(href) ? assetUrl(href, prefix) : href);
   return md.render(body);
 }
 
@@ -129,7 +131,9 @@ export function build() {
   if (!resources || typeof resources.title !== 'string' || !Array.isArray(resources.items)) throw new Error('资料下载配置缺少标题或列表');
   const downloads = resources.items.map(item => {
     if (!item || typeof item.title !== 'string' || !item.file) throw new Error('每份资料需要名称和文件');
-    return `<section class="chapter"><h2>${escape(item.title)}</h2><p>${escape(item.description)}</p><a class="button" href="${escape(fileUrl(item.file, '../'))}" download>${escape(item.button || '下载文件 ↓')}</a>${item.online_url ? ` <a href="${escape(fileUrl(item.online_url, '../'))}">在线阅读 ↗</a>` : ''}</section>`;
+    if (item.preview_file && !isPDF(item.preview_file)) throw new Error('预览版附件必须是 PDF');
+    const preview = item.preview_file || item.online_url || (isPDF(item.file) ? item.file : '');
+    return `<section class="chapter"><h2>${escape(item.title)}</h2><p>${escape(item.description)}</p><a class="button" href="${escape(fileUrl(item.file, '../'))}" download>${escape(item.button || '下载文件 ↓')}</a>${preview ? ` <a href="${escape(fileUrl(preview, '../'))}" target="_blank" rel="noopener noreferrer">在线预览 ↗</a>` : ''}</section>`;
   }).join('\n');
   pages.set('team/resources.html', template('resources.html', {
     title: escape(resources.title),
@@ -159,4 +163,8 @@ export function build() {
   return output;
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) build();
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  const output = build();
+  const { buildAdmin } = await import('./build-admin.mjs');
+  await buildAdmin(output);
+}

@@ -20,7 +20,13 @@
       tokens[index].attrSet('src', assetPreview(tokens[index].attrGet('src'), getAsset));
       return imageRule(tokens, index, options, env, renderer);
     };
+    window.TeamAttachments.attachmentLinks(parser, path => /^(?:\/(?:SYSU-Orienteering-Team\/)?)?uploads\//.test(path) ? assetPreview(path, getAsset) : path);
     return parser.render(body || '');
+  }
+  function filePreview(path, getAsset) {
+    if (!path) return '';
+    if (/^(?:\/(?:SYSU-Orienteering-Team\/)?)?uploads\//.test(path)) return assetPreview(path, getAsset);
+    return /^https:\/\//.test(path) ? path : '../' + String(path).replace(/^\//, '');
   }
   const ArticlePreview = createClass({
     render() {
@@ -46,7 +52,8 @@
         h('p', { className: 'meta' }, data.get('summary')),
         items ? items.map((item, index) => h('section', { className: 'cms-resource', key: index },
           h('h2', {}, item.get('title')), h('p', {}, item.get('description')),
-          h('span', { className: 'download' }, item.get('button') || '下载文件 ↓'),
+          h('a', { className: 'download', href: filePreview(item.get('file'), this.props.getAsset), target: '_blank', rel: 'noopener noreferrer', download: '' }, item.get('button') || '下载文件 ↓'),
+          (item.get('preview_file') || item.get('online_url') || window.TeamAttachments.isPDF(item.get('file'))) ? h('a', { href: filePreview(item.get('preview_file') || item.get('online_url') || item.get('file'), this.props.getAsset), target: '_blank', rel: 'noopener noreferrer' }, ' 在线预览 ↗') : null,
           h('p', {}, item.get('file') || '请选择附件')
         )).toArray() : null
       );
@@ -61,14 +68,15 @@
   // Adds an attachment picker to the Markdown insert menu; stores an ordinary
   // Markdown link so both the public site and other Markdown readers support it.
   CMS.registerEditorComponent({
-    id: 'attachment', label: '附件下载',
+    id: 'attachment', label: '附件 / PDF预览',
     fields: [
       { name: 'title', label: '链接文字', widget: 'string', default: '下载附件' },
-      { name: 'file', label: '附件', widget: 'file' }
+      { name: 'file', label: '附件', widget: 'file' },
+      { name: 'preview', label: 'PDF 预览版（可选）', widget: 'file', required: false }
     ],
-    pattern: /^\[([^\]\n]+)\]\(<([^>\n]+)>\)$/,
-    fromBlock: match => ({ title: match[1], file: match[2] }),
-    toBlock: data => `[${String(data.title || '下载附件').replace(/[\[\]\r\n]/g, '')}](<${String(data.file || '').replace(/[<>\r\n]/g, '')}>)`,
+    pattern: /^\[([^\]\n]+)\]\(<([^>\n]+)>\)(?: \[PDF预览\]\(<([^>\n]+)>\))?$/,
+    fromBlock: match => ({ title: match[1], file: match[2], preview: match[3] || '' }),
+    toBlock: data => `[${String(data.title || '下载附件').replace(/[\[\]\r\n]/g, '')}](<${String(data.file || '').replace(/[<>\r\n]/g, '')}>)` + (data.preview ? ` [PDF预览](<${String(data.preview).replace(/[<>\r\n]/g, '')}>)` : ''),
     toPreview: data => h('span', {}, '↓ ', data.title || '下载附件', ' · ', data.file || '请选择文件')
   });
   // Expose pure preview helpers for regression tests without an OAuth session.

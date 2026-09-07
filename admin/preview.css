@@ -12,3 +12,4 @@ body { margin: 0; padding: 30px; background: #f6f5ee; color: #173f35; font: 16px
 .cms-resource { background: white; border: 1px solid #d9e0d5; padding: 22px; border-radius: 10px; margin: 20px 0; }
 .cms-resource .download { display: inline-block; padding: 8px 16px; border-radius: 5px; background: #d6ed9c; color: #173f35; }
 @media(max-width:500px) { body { padding: 18px; } .cms-preview h1 { font-size: 27px; } }
+.attachment-download { display:inline-block; margin:4px 8px; padding:2px 9px; border:1px solid #cad7ca; border-radius:5px; font-size:.85em; }

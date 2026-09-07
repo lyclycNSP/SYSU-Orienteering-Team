@@ -46,7 +46,7 @@ Markdown 模式支持撤销/重做以及 Ctrl/Cmd+B、I、Z 快捷键。切换�
 - “比赛故事”：填写标题、摘要、正文等。封面可上传插图或照片，建议横图。首页裁剪铺满卡片顶部，正文页显示完整比例。空封面保留等高线图案。
 - “规章制度”：像手记一样新建多篇文章。`/team/rules/` 展示规程列表，首页有“规章制度”筛选。原规程内容完整保留为一篇文章，文件仍在 `content/rules/index.md`，阅读地址为 `/team/rules/doc-index.html`；新文章使用 `doc-文件名.html`。
 - “资料下载 → 下载资料列表”：添加、删除、排序资料条目，填写名称和说明，用“文件”字段上传 PDF、Word 等附件。原指南和 IOF 下载入口继续保留。
-- 正文使用富文本模式时，可在“添加组件（＋）→ 附件下载”中选择文件；最终保存为普通 Markdown 链接，也可以手动写 `[下载资料](<uploads/文件名.pdf>)`。
+- 正文使用富文本模式时，可在“添加组件（＋）→ 附件 / PDF预览”中选择文件；最终保存为普通 Markdown 链接，也可以手动写 `[查看资料](<uploads/文件名.pdf>)`。
 - Markdown 支持标题、列表、表格、链接、图片；内嵌 HTML 按文本显示。新图片路径为 `uploads/...`；旧 `/uploads/...` 路径仍受支持。不要手动将草稿图片改成线上完整网址。
 - 点击发布后，Markdown 和上传文件写入 GitHub，GitHub Pages 自动构建；仅内容和媒体变化时 Netlify 跳过构建。文章默认在网站显示，发布内容存于公开仓库，不可用来保存私密内容。删除文章后 Pages 构建也会移除对应网页。
 - 后台右侧采用队伍网站字体、配色和正文样式，支持封面和正文图片的即时预览；最终导航和首页卡片以构建后的网站为准。
@@ -66,9 +66,9 @@ Markdown 模式支持撤销/重做以及 Ctrl/Cmd+B、I、Z 快捷键。切换�
 - `templates/`：首页及文章布局；首页文案在这里修改。
 - `team/style.css`、`team/content.css`：队伍栏目样式。
 - `scripts/build.mjs`：只写入生成目录 `_site/`，不修改指南。
-- `package-lock.json`：锁定 Markdown、YAML 解析依赖。使用成熟解析器，避免自制解析器遗漏常见语法。
+- `package-lock.json`：锁定 Markdown、YAML 和 Decap 后台构建依赖。
 
-旧 `team/index.html`、`team/posts/`、`team/rules/index.html`、`team/resources.html` 保留，不再作为新构建的内容来源。部署使用 `_site/`，它只包含对读者公开的网站文件。后台样式和预览分别在 `admin/admin.css`、`admin/preview.css`、`admin/preview.js`，不需要修改 Decap 核心代码。
+旧 `team/index.html`、`team/posts/`、`team/rules/index.html`、`team/resources.html` 保留，不再作为新构建的内容来源。部署使用 `_site/`，它只包含对读者公开的网站文件。后台样式和预览分别在 `admin/admin.css`、`admin/preview.css`、`admin/preview.js`；媒体窗口在 `scripts/cms-entry.jsx`，由构建器打包。
 
 参考：[Decap GitHub backend](https://decapcms.org/docs/github-backend/)。
 
@@ -88,3 +88,21 @@ GitHub Pages 的 `/admin/` 根据域名自动跳转到 Netlify 后台；Netlify 
 空图片占位（例如 Markdown 的 ![]()）在发布页面忽略，在右侧预览提示补选或删除，不再阻断整站构建。非空非法路径仍报错。Decap 3.16 可能残留部署预览等待按钮，admin/ui.js 仅隐藏对应按钮，保留即时预览开关。
 
 定向入门中的 member-guide.md 是 README 指南的独立副本，封面及图例位于 uploads/guide-*，可在后台编辑；首页已取消硬编码跳转卡片。修改该文章不会同步改动根指南、README 或 PDF。原指南入口继续保留。
+
+## 媒体整理与附件预览
+
+- 新媒体窗口有“当前文章 / 公共素材 / 全部文件”，支持文件名、目录搜索和图片/文档筛选。图片字段只能选图片。
+- 在文章中上传，默认保存到 `uploads/articles/栏目/文章标识/`。首次上传时自动记录隐藏字段 `media_id`，改标题不会改变目录。切换“公共素材”后上传则保存到 `uploads/resources/`；下载资料列表和独立媒体入口默认使用此目录。
+- 文件名自动追加短编号，不覆盖旧同名文件；单文件上限 25 MB。正文已引用的旧图片也会在“当前文章”显示。旧文件不搬迁、不批量重命名、不删除，未引用旧文件从“全部文件”选择。
+- 编辑文章或下载列表时，文件以草稿暂存，可立即选取和预览，随内容发布提交；从独立媒体入口上传则直接写入仓库。窗口不提供删除或迁移操作。
+- PDF 链接在新标签页打开，另附下载入口；浏览器或手机设置仍可能将 PDF 下载。后台草稿 PDF 使用临时 Blob 地址，不需要先发布。
+- DOC/DOCX 保留原件下载。要在线查看，另传 PDF：富文本附件组件填写“PDF 预览版”，下载列表填写“PDF 预览版”；Markdown 模式依次插入原件和 PDF 两个链接。不会自动转换 Word，也不向第三方阅读服务传送文件。
+- 在线测试通过前不迁移旧文件。之后的迁移必须同时更新所有引用，并检查页面图片与附件链接，再另行执行。
+
+### 后台构建与维护
+
+`npm run build` 先生成静态页面，再用 esbuild 打包锁定的 Decap 3.16.0（core 3.18.0）和媒体窗口，生成 `_site/admin/vendor/cms.js`。原后台通过 CDN 加载，现在使用同站点文件；身份认证与文章发布仍走 Decap 的 GitHub backend。
+
+`scripts/cms-compat.mjs` 对锁定源码做两个窄适配：保留 `uploads/` 下的完整路径，防止保存时压平目录；GitHub 媒体列表递归读取子目录。匹配点改变会使构建明确失败。不要直接编辑 node_modules 或生成文件；升级 Decap 时需重新验证上传、草稿、插入、发布和重新打开。
+
+依赖安装的 peer 警告来自 Decap 依赖对 React 的旧版本声明。本次 `npm audit` 报告的高危链源于上游 immutable 与 trim 的拒绝服务公告；没有执行会跨版本升级编辑器的 `npm audit fix --force`。依赖升级应作为独立兼容性工作处理。后台只供有仓库写权限的编辑使用，前台不加载 CMS 包。

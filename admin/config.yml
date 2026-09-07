@@ -7,6 +7,8 @@ locale: zh_Hans
 show_preview_links: false
 media_folder: uploads
 public_folder: uploads
+media_library:
+  name: team-media
 display_url: https://lyclycnsp.github.io/SYSU-Orienteering-Team/team/
 
 collections:
@@ -21,6 +23,7 @@ collections:
     format: frontmatter
     summary: '{{title}}'
     fields:
+      - {name: media_id, widget: hidden, required: false}
       - {label: 标题, name: title, widget: string}
       - {name: category, widget: hidden, default: 比赛故事}
       - {label: 摘要, name: summary, widget: text}
@@ -44,6 +47,7 @@ collections:
     extension: md
     format: frontmatter
     fields:
+      - {name: media_id, widget: hidden, required: false}
       - {label: 标题, name: title, widget: string}
       - {label: 简介, name: summary, widget: text}
       - {label: 日期, name: date, widget: datetime, required: false, date_format: 'YYYY-MM-DD', time_format: false, format: 'YYYY-MM-DD', default: ''}
@@ -61,6 +65,7 @@ collections:
     extension: md
     format: frontmatter
     fields:
+      - {name: media_id, widget: hidden, required: false}
       - {label: 标题, name: title, widget: string}
       - {label: 简介, name: summary, widget: text}
       - {label: 日期, name: date, widget: datetime, required: false, date_format: 'YYYY-MM-DD', time_format: false, format: 'YYYY-MM-DD', default: ''}
@@ -78,6 +83,7 @@ collections:
     extension: md
     format: frontmatter
     fields:
+      - {name: media_id, widget: hidden, required: false}
       - {label: 标题, name: title, widget: string}
       - {label: 简介, name: summary, widget: text}
       - {label: 日期, name: date, widget: datetime, required: false, date_format: 'YYYY-MM-DD', time_format: false, format: 'YYYY-MM-DD', default: ''}
@@ -103,5 +109,6 @@ collections:
               - {label: 资料名称, name: title, widget: string}
               - {label: 说明, name: description, widget: text, required: false}
               - {label: 文件, name: file, widget: file, hint: 可上传 PDF、Word、表格等附件，或选择已上传文件。}
+              - {label: PDF 预览版, name: preview_file, widget: file, required: false, hint: Word 等文件可另传一份 PDF 供在线预览；原文件是 PDF 时不必重复上传。}
               - {label: 下载按钮文字, name: button, widget: string, default: 下载文件 ↓}
               - {label: 在线阅读地址, name: online_url, widget: string, required: false}
