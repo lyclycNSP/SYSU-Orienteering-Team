@@ -10,3 +10,6 @@ items:
     description: International Orienteering Federation · Control Descriptions 2024
     file: /downloads/IOF Control Descriptions 2024.pdf
     button: 下载原版 PDF ↓
+  - button: 下载比赛记录 ↓
+    file: uploads/21-25定向队比赛记录.docx
+    title: 21-25定向队比赛记录
