@@ -5,7 +5,7 @@ import MarkdownIt from 'markdown-it';
 import { parse } from 'yaml';
 
 export const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const categories = { '训练回顾': 'training', '比赛故事': 'race', '入门资料': 'guide', '队伍规程': 'rules' };
+const categories = { '训练回顾': 'training', '比赛故事': 'race', '入门教程': 'guide', '队伍规程': 'rules' };
 const escape = value => String(value ?? '').replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
 
 // CMS saves uploads relative to the site root. Published pages use relative URLs,
@@ -58,7 +58,7 @@ export function readContent(file) {
   for (const key of ['published', 'example']) {
     if (data[key] !== undefined && typeof data[key] !== 'boolean') throw new Error(`${file}: ${key} 必须为布尔值`);
   }
-  return { ...data, body: match[2], slug: basename(file, '.md') };
+  return { ...data, category: data.category === '入门资料' ? '入门教程' : data.category, body: match[2], slug: basename(file, '.md') };
 }
 
 function template(name, values) {
@@ -74,7 +74,7 @@ export function articleCard(post, index, prefix = '../') {
   const art = post.cover
     ? `<div class="art"><img src="${escape(assetUrl(post.cover, prefix))}" alt="${escape(post.cover_alt)}" loading="lazy"></div>`
     : `<div class="art ${category}" aria-hidden="true">${String(index + 1).padStart(2, '0')}</div>`;
-  const href = post.category === '队伍规程' ? `${prefix}team/rules/doc-${encodeURIComponent(post.slug)}.html` : `${prefix}team/posts/${encodeURIComponent(post.slug)}.html`;
+  const href = post.collection === 'tutorials' ? `${prefix}team/tutorials/${encodeURIComponent(post.slug)}.html` : post.category === '队伍规程' ? `${prefix}team/rules/doc-${encodeURIComponent(post.slug)}.html` : `${prefix}team/posts/${encodeURIComponent(post.slug)}.html`;
   return `<article class="card" data-category="${category}"><a href="${href}">${art}<div class="card-body"><span class="tag">${escape(post.category)}${post.example ? ' · 排版示例' : ''}</span><h3>${escape(post.title)}</h3><p>${escape(post.summary)}</p><div class="card-foot"><span>${post.example ? '内容示例' : escape(post.date || post.author || '队伍手记')}</span><span>阅读全文 ↗</span></div></div></a></article>`;
 }
 
@@ -84,16 +84,17 @@ export function build() {
   const guideBefore = readFileSync(join(root, 'index.html'));
   const posts = readdirSync(join(root, 'content/posts')).filter(name => name.endsWith('.md')).map(name => readContent(join(root, 'content/posts', name))).filter(post => post.published !== false);
   const rules = readdirSync(join(root, 'content/rules')).filter(name => name.endsWith('.md')).map(name => ({ ...readContent(join(root, 'content/rules', name)), category: '队伍规程' })).filter(post => post.published !== false);
-  const articles = [...posts, ...rules].sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')) || b.slug.localeCompare(a.slug));
+  const tutorials = readdirSync(join(root, 'content/tutorials')).filter(name => name.endsWith('.md')).map(name => ({ ...readContent(join(root, 'content/tutorials', name)), category: '入门教程', collection: 'tutorials' })).filter(post => post.published !== false);
+  const articles = [...posts, ...rules, ...tutorials].sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')) || b.slug.localeCompare(a.slug));
   const pages = new Map();
   const cards = articles.map((post, index) => articleCard(post, index));
-  cards.push('<article class="card" data-category="guide"><a href="../index.html"><div class="art guide" aria-hidden="true">△</div><div class="card-body"><span class="tag">入门资料 · 已有指南</span><h3>第一次接触定向，从这里开始</h3><p>图例速查、创作者推荐和实用工具，随时查阅，也可以下载 PDF。</p><div class="card-foot"><span>队员指南</span><span>阅读全文 ↗</span></div></div></a></article>');
+  cards.push('<article class="card" data-category="guide"><a href="../index.html"><div class="art guide" aria-hidden="true">△</div><div class="card-body"><span class="tag">入门教程 · 已有指南</span><h3>第一次接触定向，从这里开始</h3><p>图例速查、创作者推荐和实用工具，随时查阅，也可以下载 PDF。</p><div class="card-foot"><span>队员指南</span><span>阅读全文 ↗</span></div></div></a></article>');
   pages.set('team/index.html', template('home.html', { cards: cards.join('\n'), count: cards.length }));
   for (const post of articles) {
     const cover = post.cover ? `<img class="article-cover" src="${escape(assetUrl(post.cover, '../../'))}" alt="${escape(post.cover_alt)}">` : '';
     const meta = post.example ? '排版示例 · 非真实活动报道' : [post.date, post.author].filter(Boolean).map(escape).join(' · ');
     const article = `<p class="crumb"><a href="../index.html">队伍手记</a> / ${escape(post.category)}</p><header class="article-head"><p class="eyebrow">${escape(post.category)}</p><h1>${escape(post.title)}</h1><p class="small">${meta}</p></header>${cover}<div class="prose">${renderMarkdown(post.body)}</div><a class="back" href="../index.html#journal">← 返回全部手记</a>`;
-    const path = post.category === '队伍规程' ? `team/rules/doc-${post.slug}.html` : `team/posts/${post.slug}.html`;
+    const path = post.collection === 'tutorials' ? `team/tutorials/${post.slug}.html` : post.category === '队伍规程' ? `team/rules/doc-${post.slug}.html` : `team/posts/${post.slug}.html`;
     pages.set(path, template('article.html', { title: escape(post.title), article }));
   }
   pages.set('team/rules/index.html', template('article.html', {

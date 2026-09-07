@@ -37,6 +37,8 @@ GitHub Pages 仍响应 main 的所有提交。Decap 通过 GitHub 后端读写�
 
 ## 日常编辑
 
+- “入门教程”：可独立新建多篇教程，源文件位于 `content/tutorials/`，生成 `team/tutorials/文件名.html`，归入首页“入门教程”筛选。原有手记中的“入门资料”在构建时兼容显示为“入门教程”，旧文章网址不变。
+
 正文上方可切换“富文本 / Markdown”，两种模式均有快捷工具栏。富文本沿用 Decap 原生操作；Markdown 模式直接在选区或光标处插入语法，支持加粗、斜体、删除线、标题、列表、引用、代码、链接、图片和附件。图片/附件按钮打开同一个媒体库，选择后自动插入链接，并支持未发布图片的右侧预览。
 
 Markdown 模式支持撤销/重做以及 Ctrl/Cmd+B、I、Z 快捷键。切换模式会清空该模式的撤销记录，但保留当前正文；富文本转换可能统一空行等 Markdown 写法，特殊语法建议始终使用 Markdown 模式。编辑器扩展位于 `admin/markdown-editor.js`，没有修改 Decap 核心文件。
@@ -52,6 +54,9 @@ Markdown 模式支持撤销/重做以及 Ctrl/Cmd+B、I、Z 快捷键。切换�
 - “标记为示例文章”只添加“排版示例 / 非真实活动报道”字样，正式文章请关闭；它不影响是否发布，也不等同于草稿状态。
 
 ## 文件分工
+
+- `README.md`：指南内容来源。修改后执行 `node scripts/update-guide.mjs` 同步指南正文到根 `index.html`，保留页面框架和目录。普通构建不会自动改写指南。更新 PDF 时先构建并通过浏览器打印生成，打印样式为 `assets/guide-print.css`；确保 PDF 中相对链接转换为 GitHub Pages 正式网址，检查图例、分页与链接后替换原同名 PDF，再构建发布。
+- `assets/team-logo.svg`：首页使用的队徽原始 SVG。
 
 - `admin/`：后台及字段配置，不含密钥。
 - `content/posts/*.md`：文章源文件。示例地址继续使用 `training-example.html` 和 `race-example.html`。

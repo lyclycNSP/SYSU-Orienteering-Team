@@ -11,3 +11,5 @@
 .rules-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
 .art.rules { background-color: #e8e3d4; color: #756044; }
 @media(max-width:600px) { .rules-grid { grid-template-columns: 1fr; } }
+
+.team-logo { width: 58px; height: 58px; object-fit: contain; flex-shrink: 0; }

@@ -21,7 +21,7 @@ collections:
     summary: '{{title}} · {{category}}'
     fields:
       - {label: 标题, name: title, widget: string}
-      - {label: 分类, name: category, widget: select, options: [训练回顾, 比赛故事, 入门资料]}
+      - {label: 分类, name: category, widget: select, options: [训练回顾, 比赛故事, 入门教程]}
       - {label: 摘要, name: summary, widget: text}
       - {label: 日期, name: date, widget: datetime, required: false, date_format: 'YYYY-MM-DD', time_format: false, format: 'YYYY-MM-DD', default: ''}
       - {label: 作者, name: author, widget: string, required: false}
@@ -38,6 +38,23 @@ collections:
     label: 队伍规程
     label_singular: 规程文章
     folder: content/rules
+    create: true
+    slug: '{{slug}}'
+    extension: md
+    format: frontmatter
+    fields:
+      - {label: 标题, name: title, widget: string}
+      - {label: 简介, name: summary, widget: text}
+      - {label: 日期, name: date, widget: datetime, required: false, date_format: 'YYYY-MM-DD', time_format: false, format: 'YYYY-MM-DD', default: ''}
+      - {label: 作者或发布单位, name: author, widget: string, required: false}
+      - {label: 封面插图或照片, name: cover, widget: image, required: false}
+      - {label: 图片说明, name: cover_alt, widget: string, required: false}
+      - {label: 在网站显示, name: published, widget: boolean, default: true}
+      - {label: 正文, name: body, widget: team-markdown}
+  - name: tutorials
+    label: 入门教程
+    label_singular: 教程文章
+    folder: content/tutorials
     create: true
     slug: '{{slug}}'
     extension: md

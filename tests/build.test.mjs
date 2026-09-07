@@ -1,9 +1,34 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, existsSync, readdirSync, writeFileSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync, writeFileSync, unlinkSync } from 'node:fs';
 import { parse } from 'yaml';
 import { join } from 'node:path';
 import { root, build, assetUrl, fileUrl, renderMarkdown, articleCard, readContent } from '../scripts/build.mjs';
+
+test('Multiple CMS tutorials generate separate pages and guide category cards', () => {
+  const created = [];
+  try {
+    for (const slug of ['qa-tutorial-one', 'qa-tutorial-two']) {
+      const file = join(root, 'content/tutorials', `${slug}.md`);
+      writeFileSync(file, `---\ntitle: ${slug}\nsummary: 测试教程\npublished: true\n---\n## 学习步骤\n\n正文\n`, { flag: 'wx' });
+      created.push(file);
+    }
+    const output = build();
+    const home = readFileSync(join(output, 'team/index.html'), 'utf8');
+    for (const slug of ['qa-tutorial-one', 'qa-tutorial-two']) {
+      assert.ok(home.includes(`team/tutorials/${slug}.html`));
+      assert.ok(readFileSync(join(output, 'team/tutorials', `${slug}.html`), 'utf8').includes('学习步骤'));
+    }
+    assert.ok(home.includes('assets/team-logo.svg'));
+    assert.ok(home.includes('入门教程'));
+    assert.ok(!home.includes('入门资料'));
+    const cfg = parse(readFileSync(join(root, 'admin/config.yml'), 'utf8'));
+    assert.equal(cfg.collections.find(c => c.name === 'tutorials').create, true);
+  } finally {
+    for (const file of created) unlinkSync(file);
+    build();
+  }
+});
 
 test('CMS upload paths work under both hosts and reject unsafe paths', () => {
   assert.equal(assetUrl('/uploads/封面 图.jpg', '../'), '../uploads/%E5%B0%81%E9%9D%A2%20%E5%9B%BE.jpg');

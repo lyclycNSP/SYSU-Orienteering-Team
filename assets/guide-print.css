@@ -1,0 +1,23 @@
+@page { size: A4; margin: 16mm 16mm 18mm; }
+@media print {
+  html, body { overflow: visible; background: white; font-size: 10pt; }
+  header { padding: 12mm 0; background: white; color: #17483f; }
+  header:after, .actions, aside, footer { display: none; }
+  header h1 { font-size: 28pt; }
+  header h1 span, header p, .eyebrow { color: #17483f; }
+  .layout { display: block; padding: 0; max-width: none; }
+  main, section { margin: 0; padding: 0; }
+  p { font-size: 10pt; line-height: 1.65; }
+  h2 { font-size: 18pt; break-after: avoid; margin-top: 0; }
+  h3 { font-size: 13pt; break-after: avoid; }
+  .cards { display: block; }
+  .card { border: 0; border-bottom: 1px solid #dce5dc; border-radius: 0; padding: 4mm 0; box-shadow: none; break-inside: avoid; }
+  .group-heading { break-after: avoid; padding: 3mm 0; font-size: 14pt; }
+  section:not(:first-of-type) { break-before: page; }
+  #section-6 { break-before: auto; margin-top: 12mm; }
+  #section-1 .card { break-before: page; padding: 0; border: 0; }
+  .legend { padding: 0; margin: 3mm 0 0; background: white; }
+  .legend img { max-height: 225mm; width: 100%; object-fit: contain; }
+  figcaption { font-size: 8pt; }
+  a { color: #176b58; }
+}

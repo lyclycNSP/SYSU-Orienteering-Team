@@ -54,6 +54,7 @@
   CMS.registerPreviewStyle('preview.css');
   CMS.registerPreviewTemplate('posts', ArticlePreview);
   CMS.registerPreviewTemplate('rules', ArticlePreview);
+  CMS.registerPreviewTemplate('tutorials', ArticlePreview);
   CMS.registerPreviewTemplate('resources', ResourcesPreview);
   // Adds an attachment picker to the Markdown insert menu; stores an ordinary
   // Markdown link so both the public site and other Markdown readers support it.
