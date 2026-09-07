@@ -5,6 +5,21 @@ import { parse } from 'yaml';
 import { join } from 'node:path';
 import { root, build, assetUrl, fileUrl, renderMarkdown, articleCard, readContent } from '../scripts/build.mjs';
 
+test('CMS hides deploy previews and status controls without disabling live preview', () => {
+  const cfg = parse(readFileSync(join(root, 'admin/config.yml'), 'utf8'));
+  assert.equal(cfg.show_preview_links, false);
+  assert.equal(cfg.collections.find(c => c.name === 'posts').summary, '{{title}}');
+  for (const collection of cfg.collections.filter(c => c.folder)) {
+    assert.notEqual(collection.editor?.preview, false);
+    const visibility = collection.fields.find(f => f.name === 'published');
+    assert.equal(visibility.widget, 'hidden');
+    assert.equal(visibility.default, true);
+  }
+  const example = cfg.collections.find(c => c.name === 'posts').fields.find(f => f.name === 'example');
+  assert.equal(example.widget, 'hidden');
+  assert.equal(example.default, false);
+});
+
 test('Multiple CMS tutorials generate separate pages and guide category cards', () => {
   const created = [];
   try {

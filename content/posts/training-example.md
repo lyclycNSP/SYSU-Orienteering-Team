@@ -6,7 +6,7 @@ date: 2026-09-07
 author: ""
 cover: /uploads/测试图.jpg
 cover_alt: ""
-example: true
+example: false
 published: true
 ---
 > 这是一篇用于预览文章结构的示例。时间、作者、照片和正式正文将在提供实际内容后加入。

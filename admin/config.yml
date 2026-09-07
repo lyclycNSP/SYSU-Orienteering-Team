@@ -4,6 +4,7 @@ backend:
   branch: main
 
 locale: zh_Hans
+show_preview_links: false
 media_folder: uploads
 public_folder: uploads
 display_url: https://lyclycnsp.github.io/SYSU-Orienteering-Team/team/
@@ -18,7 +19,7 @@ collections:
     identifier_field: title
     extension: md
     format: frontmatter
-    summary: '{{title}} · {{category}}'
+    summary: '{{title}}'
     fields:
       - {label: 标题, name: title, widget: string}
       - {name: category, widget: hidden, default: 队伍文化宣传}
@@ -31,8 +32,8 @@ collections:
         required: false
         hint: 可选。首页卡片顶部显示，建议横图；留空使用等高线图案。正文页会显示完整图片。
       - {label: 封面图片说明, name: cover_alt, widget: string, required: false, hint: 简短描述图片内容，方便屏幕阅读器使用。}
-      - {label: 标记为示例文章, name: example, widget: boolean, default: false, hint: 开启后读者会看到“排版示例 / 非真实活动报道”。正式文章请关闭，不影响发布权限。}
-      - {label: 在网站显示, name: published, widget: boolean, default: true, hint: 关闭后不生成网页，但文件仍存于公开仓库，请勿用来保存私密内容。}
+      - {name: example, widget: hidden, default: false}
+      - {name: published, widget: hidden, default: true}
       - {label: 正文, name: body, widget: team-markdown}
   - name: rules
     label: 规章制度
@@ -49,7 +50,7 @@ collections:
       - {label: 作者或发布单位, name: author, widget: string, required: false}
       - {label: 封面插图或照片, name: cover, widget: image, required: false}
       - {label: 图片说明, name: cover_alt, widget: string, required: false}
-      - {label: 在网站显示, name: published, widget: boolean, default: true}
+      - {name: published, widget: hidden, default: true}
       - {label: 正文, name: body, widget: team-markdown}
   - name: tutorials
     label: 定向入门
@@ -66,7 +67,7 @@ collections:
       - {label: 作者或发布单位, name: author, widget: string, required: false}
       - {label: 封面插图或照片, name: cover, widget: image, required: false}
       - {label: 图片说明, name: cover_alt, widget: string, required: false}
-      - {label: 在网站显示, name: published, widget: boolean, default: true}
+      - {name: published, widget: hidden, default: true}
       - {label: 正文, name: body, widget: team-markdown}
   - name: notices
     label: 名单公示
@@ -83,7 +84,7 @@ collections:
       - {label: 作者或发布单位, name: author, widget: string, required: false}
       - {label: 封面插图或照片, name: cover, widget: image, required: false}
       - {label: 图片说明, name: cover_alt, widget: string, required: false}
-      - {label: 在网站显示, name: published, widget: boolean, default: true}
+      - {name: published, widget: hidden, default: true}
       - {label: 正文, name: body, widget: team-markdown}
   - name: downloads
     label: 资料下载
