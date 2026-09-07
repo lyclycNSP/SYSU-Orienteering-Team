@@ -16,4 +16,4 @@
 - team/resources.html：现有 PDF 下载入口。
 - team/style.css、filter.js、map.svg：独立样式、筛选和装饰地图。
 
-当前文章为 HTML，示例文章已在页面内标注，不代表正式队伍记录。尚未配置 CMS、认证或自动文章生成；如果后续接入编辑后台，需要再确定内容文件格式、GitHub 登录方式和发布流程。没有添加无效的后台登录入口。
+以上是原静态版本的预览方式。现已加入 Markdown 构建和 Decap 配置，新版请按 [CMS 接入说明](../docs/CMS.md) 构建后预览 `_site/`。现有 HTML 保留作为旧版，新文章以 `content/` 为准。认证尚需上线后登录验证。

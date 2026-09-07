@@ -1,0 +1,46 @@
+backend:
+  name: github
+  repo: lyclycNSP/SYSU-Orienteering-Team
+  branch: main
+
+locale: zh_Hans
+media_folder: uploads
+public_folder: /uploads
+display_url: https://lyclycnsp.github.io/SYSU-Orienteering-Team/team/
+
+collections:
+  - name: posts
+    label: 队伍手记
+    label_singular: 文章
+    folder: content/posts
+    create: true
+    slug: '{{slug}}'
+    identifier_field: title
+    extension: md
+    format: frontmatter
+    summary: '{{title}} · {{category}}'
+    fields:
+      - {label: 标题, name: title, widget: string}
+      - {label: 分类, name: category, widget: select, options: [训练回顾, 比赛故事, 入门资料]}
+      - {label: 摘要, name: summary, widget: text}
+      - {label: 日期, name: date, widget: datetime, required: false, date_format: 'YYYY-MM-DD', time_format: false, format: 'YYYY-MM-DD', default: ''}
+      - {label: 作者, name: author, widget: string, required: false}
+      - label: 封面插图或照片
+        name: cover
+        widget: image
+        required: false
+        hint: 可选。首页卡片顶部显示，建议横图；留空使用等高线图案。正文页会显示完整图片。
+      - {label: 封面图片说明, name: cover_alt, widget: string, required: false, hint: 简短描述图片内容，方便屏幕阅读器使用。}
+      - {label: 是否为排版示例, name: example, widget: boolean, default: false}
+      - {label: 在网站显示, name: published, widget: boolean, default: true, hint: 关闭后不生成网页，但文件仍存于公开仓库，请勿用来保存私密内容。}
+      - {label: 正文, name: body, widget: markdown}
+  - name: pages
+    label: 固定页面
+    files:
+      - name: rules
+        label: 队伍规程
+        file: content/rules/index.md
+        fields:
+          - {label: 标题, name: title, widget: string}
+          - {label: 简介, name: summary, widget: text}
+          - {label: 正文, name: body, widget: markdown}
