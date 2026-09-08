@@ -1,7 +1,8 @@
 ---
 media_id: 18c8c85909eb744219ffb1a3
 title: 第一次接触定向，从这里开始
-summary: 图例速查、创作者推荐和实用工具，随时查阅，也可以下载 PDF。
+summary: 刚刚认识定向的你，是否能在网上找到需要的消息呢？想看更多定向视频和定向知识分享吗？这里是我们准备的图例速查、创作者推荐和实用工具，随时查阅，也可以下载
+  PDF，希望你在定向的路上走得又快又远。
 date: 2026-09-07
 author: 中山大学定向队
 cover: uploads/articles/tutorials/18c8c85909eb744219ffb1a3/guide-cover.webp
