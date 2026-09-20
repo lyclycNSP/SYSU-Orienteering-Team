@@ -38,6 +38,19 @@ test('Locked Decap selectors preserve nested paths during insertion and publicat
   assert.equal(context.selectMediaFilePath({}, null, null, nested), nested);
   assert.equal(context.selectMediaFilePublicPath({}, null, nested, null), nested);
   assert.equal(context.selectMediaFilePath({}, null, null, 'legacy.jpg'), 'uploads/legacy.jpg');
+  // Markdown/editor URLs can be encoded while draft cache keys are raw paths.
+  for (const raw of [nested, 'uploads/articles/posts/id/训练 照片.jpg', 'uploads/resources/比赛 表.pdf']) {
+    assert.equal(context.selectMediaFilePath({}, null, null, encodeURI(raw)), raw);
+    assert.equal(context.selectMediaFilePublicPath({}, null, encodeURI(raw), null), raw);
+  }
+  for (const invalid of [
+    'uploads/../bad', 'uploads/%2e%2e/bad', 'uploads/%252e%252e/bad',
+    'uploads/a%5cb', 'uploads/a%00b', 'uploads/a%23b', 'uploads/a%3fb',
+    'uploads/%', 'uploads/%E4%B8', 'uploads//bad', 'uploads/./bad'
+  ]) {
+    assert.throws(() => context.selectMediaFilePath({}, null, null, invalid), /Invalid upload path/);
+    assert.throws(() => context.selectMediaFilePublicPath({}, null, invalid, null), /Invalid upload path/);
+  }
   assert.throws(() => context.selectMediaFilePath({}, null, null, 'uploads/../bad'));
   assert.throws(() => patchSelectors('upstream changed'));
   assert.match(patchGithub(readFileSync('node_modules/decap-cms-backend-github/dist/esm/implementation.js', 'utf8')), /listFiles\(mediaFolder, \{ depth: 64 \}\)/);

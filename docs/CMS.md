@@ -110,4 +110,6 @@ GitHub Pages 的 `/admin/` 根据域名自动跳转到 Netlify 后台；Netlify 
 
 `scripts/cms-compat.mjs` 对锁定源码做两个窄适配：保留 `uploads/` 下的完整路径，防止保存时压平目录；GitHub 媒体列表递归读取子目录。匹配点改变会使构建明确失败。不要直接编辑 node_modules 或生成文件；升级 Decap 时需重新验证上传、草稿、插入、发布和重新打开。
 
+附件路径适配器会先解码一次 URL 编码，再校验路径，使中文、空格文件名与草稿缓存使用同一个路径；非法编码、目录穿越和重复编码仍会被拒绝。若旧版后台在插入或显示附件时出现 `Invalid upload path`，应部署修复后的后台并刷新页面；代理无法修复这类本地路径校验错误。可用 `node --test tests/media.test.mjs` 回归检查。
+
 依赖安装的 peer 警告来自 Decap 依赖对 React 的旧版本声明。本次 `npm audit` 报告的高危链源于上游 immutable 与 trim 的拒绝服务公告；没有执行会跨版本升级编辑器的 `npm audit fix --force`。依赖升级应作为独立兼容性工作处理。后台只供有仓库写权限的编辑使用，前台不加载 CMS 包。

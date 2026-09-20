@@ -8,6 +8,10 @@ export function patchSelectors(source) {
     if (!source.includes(signature)) throw new Error('Decap 附件路径适配点已变化，请重新验证');
     source = source.replace(signature, signature + `
   if (typeof mediaPath === 'string' && mediaPath.startsWith('uploads/')) {
+    // Editor URLs may encode Chinese names and spaces; draft keys do not.
+    // Decode once, then validate so encoded traversal remains forbidden.
+    try { mediaPath = decodeURIComponent(mediaPath); }
+    catch { throw new Error('Invalid upload path'); }
     if (/[\\\\?#%\\x00-\\x1f]/.test(mediaPath) || mediaPath.split('/').some(p => !p || p === '.' || p === '..')) throw new Error('Invalid upload path');
     return mediaPath;
   }`);
