@@ -30,3 +30,9 @@
   .top .nav.is-open { display: flex; }
 }
 .attachment-download { display:inline-block; margin:4px 8px; padding:2px 9px; border:1px solid #cad7ca; border-radius:5px; font-size:.85em; white-space:nowrap; }
+
+.article-lock { padding:24px; border:1px solid #cad7ca; border-radius:12px; margin:24px 0; }
+.article-unlock label { display:block; margin:12px 0; }
+.article-unlock input,.article-unlock button { font:inherit; padding:10px 14px; border:1px solid #cad7ca; border-radius:6px; max-width:100%; }
+.article-unlock button { background:#173f35; color:white; cursor:pointer; }
+.article-unlock [role=status] { min-height:1.5em; }

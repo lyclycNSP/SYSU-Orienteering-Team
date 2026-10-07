@@ -3,7 +3,30 @@ import assert from 'node:assert/strict';
 import { readFileSync, existsSync, readdirSync, writeFileSync, unlinkSync } from 'node:fs';
 import { parse } from 'yaml';
 import { join } from 'node:path';
+import { pbkdf2Sync } from 'node:crypto';
 import { root, build, assetUrl, fileUrl, renderMarkdown, articleCard, readContent } from '../scripts/build.mjs';
+
+test('Password articles publish encrypted bodies, reject missing keys and restore public content when disabled', () => {
+  const file = join(root, 'content/posts/qa-password-reading.md');
+  const salt = '00112233445566778899aabbccddeeff';
+  const key = `v1:${salt}:${pbkdf2Sync('qa-password', Buffer.from(salt, 'hex'), 210000, 32, 'sha256').toString('hex')}`;
+  const write = (enabled, readingKey = key) => writeFileSync(file, `---\ntitle: 密码阅读测试\ncategory: 比赛故事\nsummary: 公开摘要\npassword_protected: ${enabled}\nreading_key: '${readingKey}'\n---\n独有受限正文关键词\n`);
+  try {
+    write(true);
+    const out = build();
+    assert.doesNotMatch(readFileSync(join(out, 'team/posts/qa-password-reading.html'), 'utf8'), /独有受限正文关键词/);
+    assert.doesNotMatch(readFileSync(join(out, 'team/index.html'), 'utf8'), /独有受限正文关键词/);
+    assert.doesNotMatch(readFileSync(join(out, 'team/culture/index.html'), 'utf8'), /独有受限正文关键词/);
+    assert.ok(existsSync(join(out, 'team/article-unlock.js')));
+    write(true, '');
+    assert.throws(build, /需要先在后台设置密码/);
+    write(false);
+    build();
+    assert.match(readFileSync(join(out, 'team/posts/qa-password-reading.html'), 'utf8'), /独有受限正文关键词/);
+    const cfg = parse(readFileSync(join(root, 'admin/config.yml'), 'utf8'));
+    for (const collection of cfg.collections.filter(c => c.folder)) assert.equal(collection.fields.find(f => f.name === 'reading_key').widget, 'article-password');
+  } finally { if (existsSync(file)) unlinkSync(file); build(); }
+});
 
 test('CMS hides deploy previews and status controls without disabling live preview', () => {
   const cfg = parse(readFileSync(join(root, 'admin/config.yml'), 'utf8'));

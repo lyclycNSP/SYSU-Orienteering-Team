@@ -24,6 +24,8 @@ collections:
     summary: '{{title}}'
     fields:
       - {name: media_id, widget: hidden, required: false}
+      - {label: 启用密码阅读, name: password_protected, widget: boolean, required: false, default: false, hint: 只限制网站正文阅读；标题、摘要、封面、公开仓库和附件直链仍可访问。}
+      - {label: 阅读密码, name: reading_key, widget: article-password, required: false, hint: 至少 6 个字符，点击设置密码后再发布。关闭密码阅读时恢复公开正文。}
       - {label: 标题, name: title, widget: string}
       - {name: category, widget: hidden, default: 比赛故事}
       - {label: 摘要, name: summary, widget: text}
@@ -48,6 +50,8 @@ collections:
     format: frontmatter
     fields:
       - {name: media_id, widget: hidden, required: false}
+      - {label: 启用密码阅读, name: password_protected, widget: boolean, required: false, default: false, hint: 只限制网站正文阅读；标题、摘要、封面、公开仓库和附件直链仍可访问。}
+      - {label: 阅读密码, name: reading_key, widget: article-password, required: false, hint: 至少 6 个字符，点击设置密码后再发布。关闭密码阅读时恢复公开正文。}
       - {label: 标题, name: title, widget: string}
       - {label: 简介, name: summary, widget: text}
       - {label: 日期, name: date, widget: datetime, required: false, date_format: 'YYYY-MM-DD', time_format: false, format: 'YYYY-MM-DD', default: ''}
@@ -66,6 +70,8 @@ collections:
     format: frontmatter
     fields:
       - {name: media_id, widget: hidden, required: false}
+      - {label: 启用密码阅读, name: password_protected, widget: boolean, required: false, default: false, hint: 只限制网站正文阅读；标题、摘要、封面、公开仓库和附件直链仍可访问。}
+      - {label: 阅读密码, name: reading_key, widget: article-password, required: false, hint: 至少 6 个字符，点击设置密码后再发布。关闭密码阅读时恢复公开正文。}
       - {label: 标题, name: title, widget: string}
       - {label: 简介, name: summary, widget: text}
       - {label: 日期, name: date, widget: datetime, required: false, date_format: 'YYYY-MM-DD', time_format: false, format: 'YYYY-MM-DD', default: ''}
@@ -84,6 +90,8 @@ collections:
     format: frontmatter
     fields:
       - {name: media_id, widget: hidden, required: false}
+      - {label: 启用密码阅读, name: password_protected, widget: boolean, required: false, default: false, hint: 只限制网站正文阅读；标题、摘要、封面、公开仓库和附件直链仍可访问。}
+      - {label: 阅读密码, name: reading_key, widget: article-password, required: false, hint: 至少 6 个字符，点击设置密码后再发布。关闭密码阅读时恢复公开正文。}
       - {label: 标题, name: title, widget: string}
       - {label: 简介, name: summary, widget: text}
       - {label: 日期, name: date, widget: datetime, required: false, date_format: 'YYYY-MM-DD', time_format: false, format: 'YYYY-MM-DD', default: ''}

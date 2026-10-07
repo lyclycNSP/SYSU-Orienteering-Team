@@ -18,6 +18,6 @@
 .media-thumb img { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; } .media-thumb b { position:absolute; top:8px; left:8px; background:#f0d8fa; padding:2px 8px; font-size:12px; }
 .media-tile strong,.media-tile small { display:block; overflow-wrap:anywhere; padding:8px 10px; } .media-tile small { padding-top:0; color:#627564; font-size:11px; }
 .team-media footer { position:sticky; bottom:-24px; background:#f6f5ee; padding:16px 0; border-top:1px solid #cad7ca; margin-top:18px; }
-.team-media footer div { display:flex; align-items:center; gap:16px; } .team-media a { color:#286650; text-decoration:underline; }
+.team-media footer div { display:flex; align-items:center; gap:16px; flex-wrap:wrap; } .team-media a { color:#286650; text-decoration:underline; }
 .media-empty { text-align:center; padding:48px 10px; } .team-media :focus-visible { outline:3px solid #b38b44; outline-offset:2px; }
 @media(max-width:600px) { .team-media { padding:16px; } .media-tools { gap:10px; } .media-grid { grid-template-columns:repeat(2,minmax(0,1fr)); } .team-media footer { bottom:-16px; } }

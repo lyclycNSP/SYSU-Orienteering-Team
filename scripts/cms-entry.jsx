@@ -11,11 +11,19 @@ import { loadMedia, loadMediaDisplayURL, mediaPersisted, closeMediaLibrary, inse
 import { createAssetProxy } from 'decap-cms-core/dist/esm/valueObjects/AssetProxy';
 import { articleFolder, uniqueName, filterMedia, referencedUploads, mediaKind, uploadPath } from './media-policy.mjs';
 import * as attachments from './attachments.mjs';
+import imageComponent from 'decap-cms-editor-component-image';
+import { mediaMimeType } from './media-types.mjs';
 
 window.CMS = CMS;
 window.h = React.createElement;
 window.createClass = createClass;
 window.TeamAttachments = attachments;
+
+CMS.registerEditorComponent({ ...imageComponent, label: '图片', fields: imageComponent.fields.map(field => ({
+  ...field, widget: field.widget || 'string', required: field.name === 'image',
+  label: { image: '图片', alt: '图片说明（Alt text）', title: '悬停提示（Title）' }[field.name],
+  hint: { alt: '描述图片内容，供屏幕阅读器和图片加载失败时使用；装饰图片可留空。', title: '鼠标悬停时显示的提示，可留空。' }[field.name]
+})) });
 
 function MediaLibrary({ close }) {
   const state = useSyncExternalStore(store.subscribe, store.getState);
@@ -66,7 +74,7 @@ function MediaLibrary({ close }) {
       for (const input of incoming) {
         if (input.size > 25 * 1024 * 1024) throw new Error(`${input.name} 超过 25 MB，请压缩后上传。`);
         if (imagesOnly && mediaKind(input.name) !== 'image') throw new Error('这个字段只能选择图片。');
-        const file = new File([input], uniqueName(input.name, crypto.randomUUID().slice(0, 8)), { type: input.type });
+        const file = new File([input], uniqueName(input.name, crypto.randomUUID().slice(0, 8)), { type: mediaMimeType(input.name) || input.type });
         const path = `${destination}/${file.name}`;
         const asset = createAssetProxy({ file, path });
         // Draft identity is path-based: uploading the same bytes twice must not
@@ -151,7 +159,7 @@ function MediaPreview({ file, state }) {
   const url = displayURL(file, state);
   const viewable = attachments.isPDF(file.path) || mediaKind(file.path) === 'image';
   if (!url) return <span>预览地址加载中…</span>;
-  return <a href={url} target="_blank" rel="noopener noreferrer" download={viewable ? undefined : file.name}>{viewable ? '新标签页预览 ↗' : '下载原文件 ↓'}</a>;
+  return <>{viewable && <a href={url} target="_blank" rel="noopener noreferrer">新标签页预览 ↗</a>}<a href={url} download={file.name}>下载原文件 ↓</a></>;
 }
 
 CMS.registerMediaLibrary({

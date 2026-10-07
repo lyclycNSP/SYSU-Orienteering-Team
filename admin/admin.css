@@ -19,3 +19,10 @@ button { border-radius: 6px; }
 .team-editor textarea { width: 100%; min-height: 420px; resize: vertical; border: 0; padding: 18px; font: 15px/1.8 Consolas, monospace; color: #173f35; background: white; }
 .team-editor button:focus-visible { outline: 2px solid #b38b44; outline-offset: 2px; }
 .team-editor button:disabled { opacity: .5; cursor: default; }
+/* Password control shares the CMS field spacing without exposing saved keys. */
+.team-article-password { padding:16px 20px; background:white; border:1px solid #dfe1e5; border-radius:0 0 5px 5px; }
+.team-article-password p { margin:0 0 12px; line-height:1.5; }
+.team-article-password input { display:block; width:100%; box-sizing:border-box; padding:10px 12px; margin-bottom:12px; border:1px solid #cad7ca; border-radius:6px; font:inherit; }
+.team-article-password button { padding:8px 12px; margin:0 8px 0 0; border:1px solid #cad7ca; border-radius:6px; background:#173f35; color:white; font:inherit; cursor:pointer; }
+.team-article-password button:disabled { opacity:.5; cursor:default; }
+.team-article-password [role=alert] { color:#a12424; margin-top:12px; }

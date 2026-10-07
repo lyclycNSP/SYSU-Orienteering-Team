@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url';
 import MarkdownIt from 'markdown-it';
 import { parse } from 'yaml';
 import { attachmentLinks, isPDF } from './attachments.mjs';
+import { parseAccessKey, protectArticle } from './article-access.mjs';
 
 export const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const categories = { '比赛故事': 'culture', '定向入门': 'guide', '规章制度': 'rules', '名单公示': 'notices' };
@@ -63,9 +64,10 @@ export function readContent(file) {
   if (!data || typeof data.title !== 'string' || !data.title.trim()) throw new Error(`${file}: 标题不能为空`);
   if (typeof data.summary !== 'string') throw new Error(`${file}: 缺少摘要`);
   if (data.date && (typeof data.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(data.date) || Number.isNaN(Date.parse(data.date)) || new Date(data.date).toISOString().slice(0, 10) !== data.date)) throw new Error(`${file}: 日期应为 YYYY-MM-DD`);
-  for (const key of ['published', 'example']) {
+  for (const key of ['published', 'example', 'password_protected']) {
     if (data[key] !== undefined && typeof data[key] !== 'boolean') throw new Error(`${file}: ${key} 必须为布尔值`);
   }
+  if (data.password_protected) parseAccessKey(data.reading_key);
   return { ...data, category: normalizeCategory(data.category), body: match[2], slug: basename(file, '.md') };
 }
 
@@ -96,7 +98,7 @@ export function articleCard(post, index, prefix = '../') {
     ? `<div class="art"><img src="${escape(assetUrl(post.cover, prefix))}" alt="${escape(post.cover_alt)}" loading="lazy"></div>`
     : `<div class="art ${category}" aria-hidden="true">${String(index + 1).padStart(2, '0')}</div>`;
   const href = post.collection === 'notices' ? `${prefix}team/notices/${encodeURIComponent(post.slug)}.html` : post.collection === 'tutorials' ? `${prefix}team/tutorials/${encodeURIComponent(post.slug)}.html` : post.category === '规章制度' ? `${prefix}team/rules/doc-${encodeURIComponent(post.slug)}.html` : `${prefix}team/posts/${encodeURIComponent(post.slug)}.html`;
-  return `<article class="card" data-category="${category}" data-search="${escape(searchText(post.body || ''))}"><a href="${href}">${art}<div class="card-body"><span class="tag">${escape(post.category)}${post.example ? ' · 排版示例' : ''}</span><h3>${escape(post.title)}</h3><p>${escape(post.summary)}</p><div class="card-foot"><span>${post.example ? '内容示例' : escape(post.date || post.author || '中山大学定向队')}</span><span>阅读全文 ↗</span></div></div></a></article>`;
+  return `<article class="card" data-category="${category}" data-search="${escape(post.password_protected ? '' : searchText(post.body || ''))}"><a href="${href}">${art}<div class="card-body"><span class="tag">${escape(post.category)}${post.example ? ' · 排版示例' : ''}${post.password_protected ? ' · 密码阅读' : ''}</span><h3>${escape(post.title)}</h3><p>${escape(post.summary)}</p><div class="card-foot"><span>${post.example ? '内容示例' : escape(post.date || post.author || '中山大学定向队')}</span><span>阅读全文 ↗</span></div></div></a></article>`;
 }
 
 export function build() {
@@ -121,7 +123,8 @@ export function build() {
   for (const post of articles) {
     const cover = post.cover ? `<img class="article-cover" src="${escape(assetUrl(post.cover, '../../'))}" alt="${escape(post.cover_alt)}">` : '';
     const meta = post.example ? '排版示例 · 非真实活动报道' : [post.date, post.author].filter(Boolean).map(escape).join(' · ');
-    const article = `<p class="crumb"><a href="../index.html">首页</a> / ${escape(post.category)}</p><header class="article-head"><p class="eyebrow">${escape(post.category)}</p><h1>${escape(post.title)}</h1><p class="small">${meta}</p></header>${cover}<div class="prose">${renderMarkdown(post.body)}</div><a class="back" href="../${categoryPaths[categories[post.category]]}/index.html">← 返回所属栏目</a>`;
+    const body = `<div class="prose">${renderMarkdown(post.body)}</div>`;
+    const article = `<p class="crumb"><a href="../index.html">首页</a> / ${escape(post.category)}</p><header class="article-head"><p class="eyebrow">${escape(post.category)}</p><h1>${escape(post.title)}</h1><p class="small">${meta}</p></header>${cover}${post.password_protected ? protectArticle(body, post.reading_key) : body}<a class="back" href="../${categoryPaths[categories[post.category]]}/index.html">← 返回所属栏目</a>`;
     const path = post.collection === 'notices' ? `team/notices/${post.slug}.html` : post.collection === 'tutorials' ? `team/tutorials/${post.slug}.html` : post.category === '规章制度' ? `team/rules/doc-${post.slug}.html` : `team/posts/${post.slug}.html`;
     pages.set(path, template('article.html', { title: escape(post.title), article }));
   }
@@ -153,7 +156,7 @@ export function build() {
   for (const path of ['index.html', '.nojekyll', 'assets', '_redirects', 'downloads', '定向越野指南-中山大学定向队.pdf', 'uploads', 'admin']) {
     cpSync(join(root, path), join(output, path), { recursive: true });
   }
-  for (const file of ['style.css', 'content.css', 'filter.js', 'map.svg']) cpSync(join(root, 'team', file), join(output, 'team', file));
+  for (const file of ['style.css', 'content.css', 'filter.js', 'article-unlock.js', 'map.svg']) cpSync(join(root, 'team', file), join(output, 'team', file));
   for (const { oldPath, newPath } of mediaAliases) {
     mkdirSync(dirname(join(output, oldPath)), { recursive: true });
     cpSync(join(root, newPath), join(output, oldPath));

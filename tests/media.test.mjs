@@ -3,8 +3,24 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import vm from 'node:vm';
 import { articleFolder, uploadPath, uniqueName, filterMedia, referencedUploads } from '../scripts/media-policy.mjs';
-import { patchSelectors, patchGithub } from '../scripts/cms-compat.mjs';
+import { patchSelectors, patchGithub, patchMediaTypes } from '../scripts/cms-compat.mjs';
 import { renderMarkdown } from '../scripts/build.mjs';
+
+test('Decap binary media receives viewable MIME types without changing bytes', async () => {
+  const source = patchMediaTypes(readFileSync('node_modules/decap-cms-lib-util/dist/esm/implementation.js', 'utf8'));
+  const start = source.indexOf('export function blobToFileObj(');
+  const end = source.indexOf('export async function getMediaDisplayURL(', start);
+  const context = { Blob, File };
+  vm.createContext(context);
+  vm.runInContext(source.slice(0, source.indexOf('\nimport ')) + source.slice(start, end).replaceAll('export ', ''), context);
+  for (const [path, type] of [['uploads/中文.jpg', 'image/jpeg'], ['uploads/图.PNG', 'image/png'], ['uploads/file.pdf', 'application/pdf'], ['uploads/raw.bin', '']]) {
+    const blob = await context.getMediaAsBlob(path, 'id', async () => new Blob(['binary bytes']));
+    assert.equal(blob.type, type);
+    assert.equal(await blob.text(), 'binary bytes');
+    assert.equal(context.blobToFileObj(path, blob).type, type);
+  }
+  assert.throws(() => patchMediaTypes('upstream changed'));
+});
 
 test('Media groups preserve old references and isolate new article/shared uploads', () => {
   const folder = articleFolder('posts', 'article-1');
