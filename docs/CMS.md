@@ -29,6 +29,8 @@ python -m http.server 8766 --bind 127.0.0.1 --directory _site
 
 ## Netlify 构建额度优化
 
+若后台代码已提交但 Netlify 比较基准报告“无变化”，而生产站仍是旧版本，可在需要发布的提交信息中加入 `[netlify build]`。脚本会强制该提交构建，即使比较基准与提交相同。这个标记仅作用于该提交，后续无标记的内容/附件提交继续按原规则跳过；不能解除账户额度暂停。不要在每次编辑文章时添加此标记。
+
 `netlify.toml` 的 `ignore` 命令运行 `scripts/netlify-ignore.mjs`，比较 Netlify 的 `CACHED_COMMIT_REF` 与 `COMMIT_REF`。仅 `content/`、`uploads/` 有变化（或无变化）时退出 0，跳过 Netlify 构建；其他文件变化、首次部署或 Git 历史不可用时退出 1，正常构建。脚本无需安装依赖。重命名同时检查原路径和新路径，避免漏掉后台文件移出。
 
 GitHub Pages 仍响应 main 的所有提交。Decap 通过 GitHub 后端读写文章和媒体，无需部署 Netlify 即可继续编辑；文章、规程和下载页请在 GitHub Pages 阅读，Netlify 副本在下次实际部署前保持旧内容。后台访问仍产生请求和流量额度。

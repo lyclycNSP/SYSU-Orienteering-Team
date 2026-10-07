@@ -12,9 +12,9 @@ test('Netlify skips content changes but retains code, mixed, rename and missing-
   const git = (...args) => execFileSync('git', args, { cwd, encoding: 'utf8' }).trim();
   git('init', '--quiet');
   const write = (path, value) => writeFileSync(join(cwd, path), value);
-  const commit = () => {
+  const commit = (message = 'fixture') => {
     git('add', '.');
-    git('-c', 'user.name=Test', '-c', 'user.email=test@example.invalid', '-c', 'commit.gpgsign=false', 'commit', '--quiet', '-m', 'fixture');
+    git('-c', 'user.name=Test', '-c', 'user.email=test@example.invalid', '-c', 'commit.gpgsign=false', 'commit', '--quiet', '-m', message);
     return git('rev-parse', 'HEAD');
   };
   mkdirSync(join(cwd, 'content'));
@@ -40,8 +40,15 @@ test('Netlify skips content changes but retains code, mixed, rename and missing-
   assert.equal(shouldSkipBuild(env(content, content), cwd), true);
   assert.equal(shouldSkipBuild({}, cwd), false);
   assert.equal(shouldSkipBuild(env('0'.repeat(40), content), cwd), false);
+  write('content/规程.md', '# 强制后台构建');
+  const forced = commit('Refresh CMS [netlify build]');
+  assert.equal(shouldSkipBuild(env(renamed, forced), cwd), false);
+  assert.equal(shouldSkipBuild(env(forced, forced), cwd), false);
+  write('content/规程.md', '# 下一次普通内容更新');
+  const afterForced = commit();
+  assert.equal(shouldSkipBuild(env(forced, afterForced), cwd), true);
   const script = fileURLToPath(new URL('../scripts/netlify-ignore.mjs', import.meta.url));
-  for (const [from, to, expected] of [[base, content, 0], [content, code, 1]]) {
+  for (const [from, to, expected] of [[base, content, 0], [content, code, 1], [forced, forced, 1], [forced, afterForced, 0]]) {
     const result = spawnSync(process.execPath, [script], { cwd, env: { ...process.env, ...env(from, to) } });
     assert.equal(result.status, expected);
   }
