@@ -38,8 +38,10 @@ test('Protected article cards exclude body search text while public cards retain
 
 test('CMS password widget persists a derived key and keeps unchanged passwords', async () => {
   let control;
+  const browser = { querySelector: () => null };
   vm.runInNewContext(readFileSync('admin/article-password.js', 'utf8'), {
     crypto: webcrypto, TextEncoder, Uint8Array, h() {}, createClass: value => value,
+    document: browser,
     CMS: { registerWidget: (name, value) => { assert.equal(name, 'article-password'); control = value; } }
   });
   let saved;
@@ -56,6 +58,10 @@ test('CMS password widget persists a derived key and keeps unchanged passwords',
   assert.equal(saved, undefined);
   instance.props.entry = { getIn: () => true };
   instance.props.value = '';
+  assert.notEqual(instance.isValid(), true);
+  browser.querySelector = () => ({ getAttribute: () => 'false' });
+  assert.equal(instance.isValid(), true);
+  browser.querySelector = () => ({ getAttribute: () => 'true' });
   assert.notEqual(instance.isValid(), true);
   instance.props.value = stored;
   assert.equal(instance.isValid(), true);

@@ -3,9 +3,16 @@
   const hex = bytes => Array.from(new Uint8Array(bytes), byte => byte.toString(16).padStart(2, '0')).join('');
   const Control = createClass({
     getInitialState() { return { password: '', editing: false, pending: false, error: '' }; },
+    isProtectionEnabled() {
+      if (typeof document !== 'undefined') {
+        const toggle = document.querySelector('[role="switch"][id^="password_protected-field"]');
+        if (toggle) return toggle.getAttribute('aria-checked') === 'true';
+      }
+      return Boolean(this.props.entry?.getIn(['data', 'password_protected']));
+    },
     isValid() {
       if (this.state.editing || this.state.pending || this.state.error) return { error: '请完成阅读密码设置后再保存。' };
-      if (this.props.entry?.getIn(['data', 'password_protected']) && !/^v1:[a-f0-9]{32}:[a-f0-9]{64}$/.test(this.props.value || '')) return { error: '启用密码阅读前，请先设置阅读密码。' };
+      if (this.isProtectionEnabled() && !/^v1:[a-f0-9]{32}:[a-f0-9]{64}$/.test(this.props.value || '')) return { error: '启用密码阅读前，请先设置阅读密码。' };
       return true;
     },
     async savePassword() {
