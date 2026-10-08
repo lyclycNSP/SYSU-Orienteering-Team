@@ -43,6 +43,13 @@ test('CMS hides deploy previews and status controls without disabling live previ
   assert.equal(example.default, false);
 });
 
+test('CMS hides the unused scroll-sync control while retaining live preview', () => {
+  const ui = readFileSync(join(root, 'admin/ui.js'), 'utf8');
+  assert.match(ui, /同步滚动/);
+  assert.match(ui, /View Live/);
+  assert.match(ui, /MutationObserver/);
+});
+
 test('Multiple CMS tutorials generate separate pages and guide category cards', () => {
   const created = [];
   try {
@@ -142,7 +149,12 @@ test('Build preserves the guide and emits only public files', () => {
   for (const rule of rules) {
     assert.ok(rulesIndex.includes(`doc-${encodeURIComponent(rule.slug)}.html`));
     const article = readFileSync(join(output, `team/rules/doc-${rule.slug}.html`), 'utf8');
-    assert.ok(article.includes(renderMarkdown(rule.body)));
+    if (rule.password_protected) {
+      assert.match(article, /class="article-lock"/);
+      assert.doesNotMatch(article, new RegExp(renderMarkdown(rule.body).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+    } else {
+      assert.ok(article.includes(renderMarkdown(rule.body)));
+    }
   }
   const resources = parse(readFileSync(join(root, 'content/resources.yml'), 'utf8'));
   const downloads = readFileSync(join(output, 'team/resources.html'), 'utf8');
