@@ -47,6 +47,8 @@ test('CMS hides the unused scroll-sync control while retaining live preview', ()
   const ui = readFileSync(join(root, 'admin/ui.js'), 'utf8');
   assert.match(ui, /同步滚动/);
   assert.match(ui, /View Live/);
+  assert.match(ui, /getAttribute\('aria-label'\)/);
+  assert.match(ui, /getAttribute\('title'\)/);
   assert.match(ui, /MutationObserver/);
 });
 
